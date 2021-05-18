@@ -22,8 +22,6 @@ module.exports = async (
   base64Encode=true 
 ) => {
 
-  console.log(data.title);
-
   const browser = await puppeteer.launch()
   // create page 
   const page = await browser.newPage()
@@ -47,14 +45,15 @@ module.exports = async (
     // twitter photo url
     document.getElementsByClassName('photo-url')[0].innerHTML = data.photoUrl;
     // 2. Return SVG image
-    return document.getElementById('nft-container').innerHTML;
+    var output = await domtoimage.toSvg(document.getElementById('nft-container'), {});
+    return output;
   }, {
     imageUrl, 
     data, 
     base64Encode 
   });
   // For debugging only:
-  await page.screenshot({ path: 'test.png' });
+  // await page.screenshot({ path: 'test.png' });
   console.log(svgOutput);
   await browser.close();
 }
