@@ -1,3 +1,6 @@
+const puppeteer = require('puppeteer')
+
+const htmlString = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,8 +13,7 @@
   <title>Document</title>
 </head>
 <body>
-  
-  <div class="nft-container" style="position: relative; width: 400px; height: 400px; background: url('https://www.verizon.com/about/sites/default/files/2020-11/metaverse-%231.jpg'); background-size: cover;">
+  <div id="nft-container" style="position: relative; width: 400px; height: 400px; background: url('https://www.verizon.com/about/sites/default/files/2020-11/metaverse-%231.jpg'); background-size: cover;">
     <div class="title-container" style="font-family: 'Source Code Pro'; font-size: 30px; position: absolute; left: 24px; top: 18px;">
       Viceland
     </div>    
@@ -30,12 +32,48 @@
       </div>
     </div>
   </div>
-
-  <script>
-
-
-
-  </script>
-
 </body>
 </html>
+`;
+
+(async () => {
+  const browser = await puppeteer.launch()
+  const page = await browser.newPage()
+  await page.setContent(htmlString);
+  async function screenshotDOMElement(opts = {}) {
+    const padding = 'padding' in opts ? opts.padding : 0;
+    const path = 'path' in opts ? opts.path : null;
+    const selector = opts.selector;
+
+    if (!selector)
+        throw Error('Please provide a selector.');
+
+    const rect = await page.evaluate(selector => {
+        const element = document.getElementById(selector);
+        if (!element)
+            return null;
+        const {x, y, width, height} = element.getBoundingClientRect();
+        return {left: x, top: y, width, height, id: element.id};
+    }, selector);
+
+    if (!rect)
+        throw Error(`Could not find element that matches selector: ${selector}.`);
+
+    return await page.screenshot({
+        path,
+        clip: {
+            x: rect.left - padding,
+            y: rect.top - padding,
+            width: rect.width + padding * 2,
+            height: rect.height + padding * 2
+        }
+    });
+}
+  await screenshotDOMElement({
+    path: 'element.png',
+    selector: 'nft-container',
+    padding: 0
+  });
+
+  await browser.close()
+})()
