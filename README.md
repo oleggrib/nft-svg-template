@@ -9,7 +9,14 @@ https://www.npmjs.com/package/html-to-image
 - Inject mock data using the same interface into this example
 - Work out how to convert this to an image
 
-## Development
+## Development (app-poc)
+
+1. Open the folder `app-poc`
+2. run `node index.js`
+
+This loads the mock function imageGenerator() with params.
+
+## Development (nft-puppeteer)
 
 1. Open the `nft-puppeteer` folder. 
 2. Run `node index.js`
