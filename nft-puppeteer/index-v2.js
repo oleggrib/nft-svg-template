@@ -16,7 +16,7 @@ const puppeteer = require('puppeteer')
 
 // ------------------------------------------------------------------//
 // TODO - A function should be run to inject
-// the correct data into this template (e.g. inject upto 3 labels) 
+// the correct data into this template (replacing dummy images and text)
 // ------------------------------------------------------------------//
 // TODO - code tidy after it's working (we can correct all positioning and tidy any markup etc)
 const htmlString = `
@@ -65,7 +65,6 @@ const htmlString = `
   // and return an SVG/PNG/JPG of the root element (https://www.npmjs.com/package/html-to-image)
   // CODE example below lines 51-58 of how we can select
   // element by id
-  const browser = await puppeteer.launch();
   var svgOutput = await page.evaluate(async () => {
     return document.getElementById('nft-container').innerHTML;
   });
@@ -105,6 +104,5 @@ const htmlString = `
   //     selector: 'nft-container',
   //     padding: 0
   //   });
-
-  await browser.close()
+  // await browser.close()
 })();
