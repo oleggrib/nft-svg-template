@@ -89,9 +89,13 @@ imageGenerator(
   ],
   true
 ).then((res) => {
-  console.log(res);
-  // fs.writeFile('helloworld.jpg', res, function (err) {
-  //   if (err) return console.log(err);
-  //   console.log('Success');
-  // });
+  // console.log(res);
+
+  // NOTE: For the image alignment to work
+  // You have to drag/drop the SVG into the browser.
+  // I'll look into this issue.
+  fs.writeFile('test.svg', res, function (err) {
+    if (err) return console.log(err);
+    console.log('Success');
+  });
 });
