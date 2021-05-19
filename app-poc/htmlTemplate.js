@@ -7,12 +7,11 @@ module.exports = `
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300&family=Bebas+Neue&family=Source+Code+Pro&display=swap" rel="stylesheet">
     <title>Document</title>
     <style>
       #nft-container {
-        position: relative; width: 400px; height: 400px; background-size: cover;
+        position: relative; width: 600px; height: 600px; background-size: cover;
       }
       #time-stamp {
         font-family: 'Barlow Condensed';
@@ -36,7 +35,7 @@ module.exports = `
         font-family: 'Source Code Pro', monospace; text-align: right; 
       }
       .label {
-        display: flex; align-items:center; background-color: rgba(0,0,0,0.2); backdrop-filter: blur(5px); backdrop-filter: blur(5px); padding: 7px; border-radius: 3px;
+        height: 28px; margin: 14px 0; display: flex; align-items:center; background-color: rgba(0,0,0,0.24); backdrop-filter: blur(5px); backdrop-filter: blur(5px); padding: 7px; border-radius: 3px;
       }
       .photo-url {
         width: 30px; border-radius: 30px;
@@ -50,25 +49,32 @@ module.exports = `
     </style>
   </head>
   <body>
-    <div id="nft-container" style="background: url('https://www.verizon.com/about/sites/default/files/2020-11/metaverse-%231.jpg'); background-size: cover;">
-      <div class="title-container">
-        <div id="title">Viceland</div>
-      </div>
-      <div class="mark-container">
-        <p id="mark">
-          1507.18FEB2021
-        </p>
-      </div>
-      <div class="autograph-container">
-        <p id="status">Signed:</p>
-        <div class="label">
-          <div class="photo-container">
-            <img class="photo-url" alt="" src="https://pbs.twimg.com/profile_images/1196498439304929281/c87NCmb0_400x400.jpg">
-          </div>
-          <div class="autograph">@BEEPLE</div>
+    <div id="outputWrapper" style="width: 600px; height: 600px;">
+      <div id="nft-container" style="background: url('https://www.verizon.com/about/sites/default/files/2020-11/metaverse-%231.jpg'); background-size: cover;">
+        <div class="title-container">
+          <div id="title">Viceland</div>
+        </div>
+        <div class="mark-container">
+          <p id="mark">
+            1507.18FEB2021
+          </p>
+        </div>
+        <div class="autograph-container">
+          <p id="status">Signed:</p>
+          <div id="label-container"></div>
         </div>
       </div>
     </div>
   </body>
   </html>
 `;
+
+// Example Label to inject into the label container
+/* 
+  <div class="label">
+    <div class="photo-container">
+      <img class="photo-url" alt="" src="https://pbs.twimg.com/profile_images/1196498439304929281/c87NCmb0_400x400.jpg">
+    </div>
+    <div class="autograph">@BEEPLE</div>
+  </div> 
+*/

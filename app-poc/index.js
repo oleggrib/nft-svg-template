@@ -1,3 +1,4 @@
+fs = require('fs');
 const imageGenerator = require("./imageGenerator");
 
 // imageUrl
@@ -14,14 +15,34 @@ const imageGenerator = require("./imageGenerator");
 
 imageGenerator(
   "https://www.verizon.com/about/sites/default/files/2020-11/metaverse-%231.jpg",
-  {
-    title: "Hello AutographNFT",
-    photoURL: "https://pbs.twimg.com/profile_images/1196498439304929281/c87NCmb0_400x400.jpg",
-    name: "Auto",
-    twitterId: "@Autograph",
-    mark: "123456789097654321"
-  },
+  [
+    {
+      title: "Bob",
+      photoURL: "https://pbs.twimg.com/profile_images/1196498439304929281/c87NCmb0_400x400.jpg",
+      name: "Bob",
+      twitterId: "@Bob",
+      mark: "123456789097654321"
+    },
+    {
+      title: "Alice",
+      photoURL: "https://pbs.twimg.com/profile_images/1196498439304929281/c87NCmb0_400x400.jpg",
+      name: "Auto",
+      twitterId: "@Alice",
+      mark: "123456789097654321"
+    },
+    {
+      title: "Bar",
+      photoURL: "https://pbs.twimg.com/profile_images/1196498439304929281/c87NCmb0_400x400.jpg",
+      name: "Bar",
+      twitterId: "@Bar",
+      mark: "123456789097654321"
+    },
+  ],
   true
 ).then((res) => {
   console.log(res);
+  // fs.writeFile('helloworld.jpg', res, function (err) {
+  //   if (err) return console.log(err);
+  //   console.log('Success');
+  // });
 });
