@@ -45,7 +45,6 @@ module.exports = async (
     data, 
     base64Encode 
   }) => {
-    // Replace data:
     
     // add nft background image:
     document.getElementById('nft-container').style.backgroundImage = "url("+imageUrl+")";
@@ -72,7 +71,7 @@ module.exports = async (
       }
     });
 
-    // add extra autographs
+    // when there are too many autographs to display, add the length of the additional.
     if (data.length > 3) { 
       document.getElementById('label-container').innerHTML += `
       <div class="label">
@@ -82,7 +81,7 @@ module.exports = async (
     };
 
     // Testing needed to ensure all images/fonts are loaded.
-    await setTimeout(() => {}, 3000);
+    // await setTimeout(() => {}, 3000);
 
     // SVG output
     let output = await domtoimage.toSvg(document.getElementById('outputWrapper'), {});
