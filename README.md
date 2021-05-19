@@ -26,10 +26,6 @@ This loads the mock function imageGenerator() with params.
 
 1. Open the `nft-puppeteer` folder. 
 2. Run `node index.js`
-3. This will output the HTML as an image
-4. (TODO) - see if we can output as SVG, PNG, JPG with this library: https://www.npmjs.com/package/html-to-image
-5. Connect this code to the Application interface
-6. Inject into the HTML template the text and images from the parameters
 
 ### Reading Dev notes / Links
 
