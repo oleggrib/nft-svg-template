@@ -38,13 +38,10 @@ module.exports = `
         height: 28px; margin: 14px 0; display: flex; align-items:center; background-color: rgba(0,0,0,0.24); backdrop-filter: blur(5px); backdrop-filter: blur(5px); padding: 7px; border-radius: 3px;
       }
       .photo-url {
-        width: 30px; border-radius: 30px;
+        width: 28px; height: 28px; border-radius: 28px;
       }
       .autograph {
         font-family: 'Bebas Neue', cursive; margin: 0 10px;
-      }
-      .photo-container {
-        background-color: white; border-radius: 30px; width: 30px; height: 30px;;
       }
     </style>
   </head>
@@ -72,9 +69,7 @@ module.exports = `
 // Example Label to inject into the label container
 /* 
   <div class="label">
-    <div class="photo-container">
-      <img class="photo-url" alt="" src="https://pbs.twimg.com/profile_images/1196498439304929281/c87NCmb0_400x400.jpg">
-    </div>
+    <img class="photo-url" alt="" src="https://pbs.twimg.com/profile_images/1196498439304929281/c87NCmb0_400x400.jpg">
     <div class="autograph">@BEEPLE</div>
   </div> 
 */
