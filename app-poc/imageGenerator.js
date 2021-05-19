@@ -2,17 +2,43 @@ const fs = require('fs');
 const puppeteer = require('puppeteer');
 const htmlString = require("./htmlTemplate");
 
+/*
+  FUNCTION: 
+  imageGenerator();
+
+  USE:
+  Generates an image from the given inputs (see interface below)
+
+  interface: {
+    imageUrl
+    data: [
+    {
+      title: string; (Title of NFT)
+      photoURL: string; (Photo of Twitter User)
+      name: string; (Name of Twitter User)
+      twitterId: string; (Handle)
+      mark: string; (ID number)
+    }
+    ],
+    base64Encode
+  }
+*/
+
 module.exports = async (
   imageUrl="", 
   data={}, 
   base64Encode=true 
 ) => {
-  const browser = await puppeteer.launch()
+
+  // launch
+  const browser = await puppeteer.launch();
+
   // create page 
-  const page = await browser.newPage()
+  const page = await browser.newPage();
+
   // set page content to template (with loaded method - this needs further testing)
   await page.setContent(htmlString, { waitUntil: 'networkidle2' });
-  // await page.setContent(htmlString);
+
   // evaluate page / dom
   var imageOutput = await page.evaluate(async ({ 
     imageUrl, 
@@ -20,13 +46,16 @@ module.exports = async (
     base64Encode 
   }) => {
     // Replace data:
+    
     // add nft background image:
     document.getElementById('nft-container').style.backgroundImage = "url("+imageUrl+")";
+    
     // add timestamp (top righthand side)
     document.getElementById('mark').innerHTML = data[data.length - 1].mark + "dateStamp()";
+    
     // add labels
     data.map((label, index) => {
-      if (index < 3) {
+      if (index < 3) { // 3 is max ammount of autographs that can show on screen.
         const labelTemplate = `
           <div class="label">
             <img
@@ -42,15 +71,17 @@ module.exports = async (
         document.getElementById('label-container').innerHTML += labelTemplate;
       }
     });
-    // Add extra number of autographs
-    if (data.length > 3) {
+
+    // add extra autographs
+    if (data.length > 3) { 
       document.getElementById('label-container').innerHTML += `
       <div class="label">
         AND ${data.length -3} MORE...
       </div>
-    `;;
-    }
-    // testing to see if image loads
+    `;
+    };
+
+    // Testing needed to ensure all images/fonts are loaded.
     await setTimeout(() => {}, 3000);
 
     // SVG output
@@ -67,9 +98,11 @@ module.exports = async (
     data, 
     base64Encode 
   });
-  // For debugging only:
-  await page.screenshot({ path: 'test.png' });
+  
+  // For debugging only (outputs image to local directory):
+  // await page.screenshot({ path: 'test.png' });
+
+  await browser.close();
 
   return imageOutput;
-  await browser.close();
 }

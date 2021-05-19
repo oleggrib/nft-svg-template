@@ -1,3 +1,18 @@
+/* 
+
+  HTML Template:
+
+  This is the first and initial template to generate images from.
+  As new requirements are given, new templates can be created to help
+  scale the imgage generation tool.
+
+  Notes:
+
+  The 'label-container' is updated 
+
+  
+*/
+
 module.exports = `
   <!DOCTYPE html>
   <html lang="en">
@@ -65,11 +80,3 @@ module.exports = `
   </body>
   </html>
 `;
-
-// Example Label to inject into the label container
-/* 
-  <div class="label">
-    <img class="photo-url" alt="" src="https://pbs.twimg.com/profile_images/1196498439304929281/c87NCmb0_400x400.jpg">
-    <div class="autograph">@BEEPLE</div>
-  </div> 
-*/
