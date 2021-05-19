@@ -45,12 +45,18 @@ module.exports = async (
     data, 
     base64Encode 
   }) => {
+
+    // build date stamp string
+    var d = new Date();
+    var n = d.getMonth();
+    var months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
+    const dateStamp = `${d.getDate()}${months[n]}${d.getFullYear()}`;
     
-    // add nft background image:
+    // add nft background image
     document.getElementById('nft-container').style.backgroundImage = "url("+imageUrl+")";
     
     // add timestamp (top righthand side)
-    document.getElementById('mark').innerHTML = data[data.length - 1].mark + "dateStamp()";
+    document.getElementById('mark').innerHTML = `${data[data.length - 1].mark}.${dateStamp}`;
     
     // add labels
     data.map((label, index) => {
