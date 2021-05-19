@@ -26,7 +26,7 @@ module.exports = async (
     document.getElementById('mark').innerHTML = data[data.length - 1].mark + "dateStamp()";
     // add labels
     data.map((label, index) => {
-      if (index < 2) {
+      if (index < 3) {
         const labelTemplate = `
           <div class="label">
             <img
@@ -42,6 +42,14 @@ module.exports = async (
         document.getElementById('label-container').innerHTML += labelTemplate;
       }
     });
+    // Add extra number of autographs
+    if (data.length > 3) {
+      document.getElementById('label-container').innerHTML += `
+      <div class="label">
+        AND ${data.length -3} MORE...
+      </div>
+    `;;
+    }
     // testing to see if image loads
     await setTimeout(() => {}, 3000);
 
