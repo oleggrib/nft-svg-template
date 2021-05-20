@@ -37,58 +37,10 @@ imageGenerator(
       twitterId: "@Bar",
       mark: "12789097654321"
     },
-    {
-      title: "Bar",
-      photoURL: "https://pbs.twimg.com/profile_images/1196498439304929281/c87NCmb0_400x400.jpg",
-      name: "Bar",
-      twitterId: "@Bar",
-      mark: "123456789097654321"
-    },
-    {
-      title: "Bar",
-      photoURL: "https://pbs.twimg.com/profile_images/1196498439304929281/c87NCmb0_400x400.jpg",
-      name: "Bar",
-      twitterId: "@Bar",
-      mark: "123456789097654321"
-    },
-    {
-      title: "Bar",
-      photoURL: "https://pbs.twimg.com/profile_images/1196498439304929281/c87NCmb0_400x400.jpg",
-      name: "Bar",
-      twitterId: "@Bar",
-      mark: "89097654321"
-    },
-    {
-      title: "Bar",
-      photoURL: "https://pbs.twimg.com/profile_images/1196498439304929281/c87NCmb0_400x400.jpg",
-      name: "Bar",
-      twitterId: "@Bar",
-      mark: "1234455553456789097654321"
-    },
-    {
-      title: "Bar",
-      photoURL: "https://pbs.twimg.com/profile_images/1196498439304929281/c87NCmb0_400x400.jpg",
-      name: "Bar",
-      twitterId: "@Bar",
-      mark: "12789097654321"
-    },
-    {
-      title: "Bar",
-      photoURL: "https://pbs.twimg.com/profile_images/1196498439304929281/c87NCmb0_400x400.jpg",
-      name: "Bar",
-      twitterId: "@Bar",
-      mark: "123456789097654321"
-    },
-    {
-      title: "Bar",
-      photoURL: "https://pbs.twimg.com/profile_images/1196498439304929281/c87NCmb0_400x400.jpg",
-      name: "Bar",
-      twitterId: "@Bar",
-      mark: "123456789097654321"
-    },
   ],
   true
 ).then((res) => {
+
   // console.log(res);
 
   // NOTE: For the image alignment to work

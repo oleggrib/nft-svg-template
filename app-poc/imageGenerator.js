@@ -1,6 +1,9 @@
 const fs = require('fs');
 const puppeteer = require('puppeteer');
-const htmlString = require("./htmlTemplate");
+const isLightContrastImage = require('./isLightContrastImage');
+
+// HTML Templates
+const signedHtmlTemplate = require("./htmlTemplates/signed");
 
 /*
   FUNCTION: 
@@ -30,6 +33,13 @@ module.exports = async (
   base64Encode=true 
 ) => {
 
+  // get the image colour (returns a boolean is image is either dark or light)
+  // With this boolean we can decide the colour of the fonts/elements to apply
+  const isLightImage = await isLightContrastImage("http://www.gstatic.com/images/icons/material/apps/fonts/1x/catalog/v5/opengraph_color.png");
+
+  // For debugging
+  // console.log('image is light?', isLightImage);
+
   // launch
   const browser = await puppeteer.launch();
 
@@ -37,14 +47,18 @@ module.exports = async (
   const page = await browser.newPage();
 
   // set page content to template (with loaded method - this needs further testing)
-  await page.setContent(htmlString, { waitUntil: 'networkidle2' });
+  await page.setContent(signedHtmlTemplate, { waitUntil: 'networkidle2' });
 
   // evaluate page / dom
   var imageOutput = await page.evaluate(async ({ 
     imageUrl, 
     data, 
-    base64Encode 
+    base64Encode,
+    isLightImage
   }) => {
+
+    // Define if the colour theme for text is black or white.
+    const colourTheme = isLightImage ? "white" : "black";
 
     // build date stamp string
     var d = new Date();
@@ -56,7 +70,11 @@ module.exports = async (
     document.getElementById('nft-container').style.backgroundImage = "url("+imageUrl+")";
     
     // add timestamp (top righthand side)
-    document.getElementById('mark').innerHTML = `${data[data.length - 1].mark}.${dateStamp}`;
+    document.getElementById('mark').innerHTML = `${data[0].mark}.${dateStamp}`;
+    
+    // apply font colour to elements
+    document.getElementById('mark').style.color = colourTheme;
+    document.getElementById('status').style.color = colourTheme;
     
     // add labels
     data.map((label, index) => {
@@ -101,11 +119,12 @@ module.exports = async (
   }, {
     imageUrl, 
     data, 
-    base64Encode 
+    base64Encode,
+    isLightImage 
   });
   
   // For debugging only (outputs image to local directory):
-  // await page.screenshot({ path: 'test.png' });
+  // await page.screenshot({ path: './mockImages/puppeteerScreenShot.png' });
 
   await browser.close();
 
