@@ -1,5 +1,6 @@
 fs = require('fs');
 const imageGenerator = require("./imageGenerator");
+const fetch = require('node-fetch');
 
 // imageUrl
 // data: [
@@ -14,7 +15,7 @@ const imageGenerator = require("./imageGenerator");
 // base64Encode
 
 imageGenerator(
-  "https://www.verizon.com/about/sites/default/files/2020-11/metaverse-%231.jpg",
+  "https://s3.amazonaws.com/images.seroundtable.com/google-rainbow-texture-1491566442.jpg",
   [
     {
       title: "Bob",
