@@ -14,10 +14,10 @@ const imageGenerator = require("./imageGenerator");
 // base64Encode
 
 imageGenerator({
-  base64Encode: true,
-  title: "Signed",
-  templateType: "SIGNED",
-  imageUrl:"https://raw.githubusercontent.com/nicktaras/json_mocks/b049c9f4e904690156ec0626a707c9007554f755/remixNFT2.svg",
+  base64Encode: true, // TODO implement a non-base64
+  title: "Signed", // View Text NFT Copy
+  templateType: "SIGNED", // "SIGNED" OR "REQUESTING"
+  imageUrl: "https://polkadot.network/content/images/2020/06/Polkadot_OG.png",
   data: [
     {
       title: "Bob",
@@ -49,6 +49,8 @@ imageGenerator({
 });
 
 // Example images to test:
+// "https://polkadot.network/content/images/2020/06/Polkadot_OG.png"
+// "https://pyxis.nymag.com/v1/imgs/8f8/e12/51b54d13d65d8ee3773ce32da03e1fa220-dogecoin.2x.rsocial.w600.jpg"
 // "https://www.ledr.com/colours/white.jpg",
 // "https://s3-us-west-2.amazonaws.com/s.cdpn.io/13471/sparkles.gif",
 // "https://i.pinimg.com/originals/a9/e5/06/a9e506364ae6b6892e6a126a2f021206.gif",
