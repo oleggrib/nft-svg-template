@@ -33,7 +33,8 @@ const signedHtmlTemplate = require("./htmlTemplates/signed");
 module.exports = async (
   imageUrl="", 
   data={}, 
-  base64Encode=true 
+  base64Encode=true,
+  title="Signed"
 ) => {
 
   const imageUrlData = await fetch(imageUrl);
@@ -70,8 +71,18 @@ module.exports = async (
   // create page 
   const page = await browser.newPage();
 
-  // set page content to template (with loaded method - this needs further testing)
-  await page.setContent(signedHtmlTemplate, { waitUntil: 'networkidle2' });
+  // set page content to template based on the input title.
+  // TODO: Consider using a param to explicitly define the template for use.
+  switch(title.toUpperCase) {
+    case "REQUESTED":
+      await page.setContent(signedHtmlTemplate, { waitUntil: 'networkidle2' });
+      break;
+    case "SIGNED":
+      await page.setContent(signedHtmlTemplate, { waitUntil: 'networkidle2' });
+      break;
+    default:
+      await page.setContent(signedHtmlTemplate, { waitUntil: 'networkidle2' });
+  }
 
   // This is applied to help ensure images are not blocked by other servers.
   // additional data maybe required to ensure images are successfully retrieved
