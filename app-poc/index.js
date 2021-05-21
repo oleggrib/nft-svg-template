@@ -1,6 +1,5 @@
 fs = require('fs');
 const imageGenerator = require("./imageGenerator");
-const fetch = require('node-fetch');
 
 // imageUrl
 // data: [
@@ -14,13 +13,12 @@ const fetch = require('node-fetch');
 // ],
 // base64Encode
 
-imageGenerator(
-  // "https://en.wikipedia.org/wiki/Scalable_Vector_Graphics#/media/File:SVG_Logo.svg",
-  "https://cloudfront-us-east-1.images.arcpublishing.com/advancelocal/KNWPMQAGMFDULEQK4OGJ2YR4DE.jpg",
-  // "https://www.ledr.com/colours/white.jpg",
-  // "https://s3-us-west-2.amazonaws.com/s.cdpn.io/13471/sparkles.gif",
-  // "https://i.pinimg.com/originals/a9/e5/06/a9e506364ae6b6892e6a126a2f021206.gif",
-  [
+imageGenerator({
+  base64Encode: true, // TODO implement a non-base64
+  title: "Signed", // View Text NFT Copy
+  templateType: "SIGNED", // "SIGNED" OR "REQUESTING"
+  imageUrl: "https://polkadot.network/content/images/2020/06/Polkadot_OG.png",
+  data: [
     {
       title: "Bob",
       photoURL: "https://pbs.twimg.com/profile_images/1196498439304929281/c87NCmb0_400x400.jpg",
@@ -42,17 +40,18 @@ imageGenerator(
       twitterId: "@Bar",
       mark: "12789097654321"
     },
-  ],
-  true
-).then((res) => {
-
-  // console.log(res);
-
-  // NOTE: For the image alignment to work
-  // You have to drag/drop the SVG into the browser.
-  // I'll look into this issue.
-  fs.writeFile('test.svg', res, function (err) {
+  ]
+}).then((res) => {
+  fs.writeFile('remixNFT.svg', res, function (err) {
     if (err) return console.log(err);
     console.log('Success');
   });
 });
+
+// Example images to test:
+// "https://polkadot.network/content/images/2020/06/Polkadot_OG.png"
+// "https://pyxis.nymag.com/v1/imgs/8f8/e12/51b54d13d65d8ee3773ce32da03e1fa220-dogecoin.2x.rsocial.w600.jpg"
+// "https://www.ledr.com/colours/white.jpg",
+// "https://s3-us-west-2.amazonaws.com/s.cdpn.io/13471/sparkles.gif",
+// "https://i.pinimg.com/originals/a9/e5/06/a9e506364ae6b6892e6a126a2f021206.gif",
+// "https://upload.wikimedia.org/wikipedia/commons/4/4f/SVG_Logo.svg",
