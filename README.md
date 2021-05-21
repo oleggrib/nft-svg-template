@@ -5,14 +5,14 @@ https://www.npmjs.com/package/html-to-image
 
 ## TODO's
 
-1. SVG - Get image Size
-2. Finalise all template styles
+1. SVG - Get image Size [TODO]
+2. Finalise all template styles [TODO]
 3. Connect with Hu (interface/integration)
-4. Template selection logic (Signed/Not Signed)
-5. Light/Dark Detector Lib API Support SVG
-6. Scale Autograph %
-7. Add Ellipsis (... when autograph will go out of bounds of the Remixed NFT)
-8. Integration with web team
+4. Template selection logic (Signed/Not Signed) [DONE] 
+5. Light/Dark Detector Lib API Support SVG [TODO]
+6. Scale Autograph % [TODO]
+7. Add Ellipsis (... when autograph will go out of bounds of the Remixed NFT) [TODO]
+8. Integration with web team [TODO]
 
 ## TODO's DONE:
 

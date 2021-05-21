@@ -2,6 +2,9 @@ const fs = require('fs');
 const puppeteer = require('puppeteer');
 // const isLightContrastImage = require('./isLightContrastImage');
 
+// Enable for SVG to be converted to Base64
+const svg64 = require('svg64');
+
 const fetch = require('node-fetch');
 const sizeOf = require('image-size');
 
@@ -39,21 +42,31 @@ module.exports = async ({
   data
 }) => {
 
-  // Fetch image to feed into puppeteer and do some initial
-  // data collection & setup
   const imageUrlData = await fetch(imageUrl);
-  const imageBuffer = await imageUrlData.buffer();
   const contentType = await imageUrlData.headers.get('content-type');
-  const imageBase64 = `data:image/${contentType};base64,`+imageBuffer.toString('base64');
 
-  // Get image dimensions
-  const dimensions = sizeOf(imageBuffer);
-  const imgH = dimensions.height;
-  const imgW = dimensions.width;
+  // variable to store image in Base64 format
+  let imageBase64, imgH, imgW;
 
-  // Development use only
-  // const imgH = 500;
-  // const imgW = 500;
+  // If SVG
+  if (contentType.indexOf("svg") > -1) {
+    // Get SVG element from response
+    const svg = await imageUrlData.text();
+    // Base64 encode SVG
+    imageBase64 = svg64(svg);
+    // const dimensions = sizeOf(imageBase64);
+    // getBBox
+    imgH = 2000;
+    imgW = 2000;
+  }
+  // If other (PNG, JPG, Gif)
+  if (contentType.indexOf("svg") <= -1) {
+    const imageBuffer = await imageUrlData.buffer();
+    imageBase64 = `data:image/${contentType};base64,`+imageBuffer.toString('base64');
+    const dimensions = sizeOf(imageBuffer);
+    imgH = dimensions.height;
+    imgW = dimensions.width;
+  }
   
   // get the image colour (returns a boolean is image is either dark or light)
   // With this boolean we can decide the colour of the fonts/elements to apply
@@ -80,15 +93,15 @@ module.exports = async ({
   switch(templateType) {
     case "REQUESTING":
       console.log("Requested Template Loaded");
-      await page.setContent(notSignedHtmlTemplate, { waitUntil: 'networkidle2' });
+      await page.setContent(notSignedHtmlTemplate); //, { waitUntil: 'networkidle2' });
       break;
     case "SIGNED":
       console.log("Signed Template Loaded");
-      await page.setContent(signedHtmlTemplate, { waitUntil: 'networkidle2' });
+      await page.setContent(signedHtmlTemplate); //, { waitUntil: 'networkidle2' });
       break;
     default:
       console.log("Default Template Loaded");
-      await page.setContent(signedHtmlTemplate, { waitUntil: 'networkidle2' });
+      await page.setContent(signedHtmlTemplate); //, { waitUntil: 'networkidle2' });
   }
 
   // This is applied to help ensure images are not blocked by other servers.

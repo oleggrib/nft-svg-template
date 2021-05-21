@@ -15,8 +15,8 @@ const imageGenerator = require("./imageGenerator");
 
 imageGenerator({
   base64Encode: true,
-  title: "Requesting",
-  templateType: "REQUESTING",
+  title: "Signed",
+  templateType: "SIGNED",
   imageUrl:"https://raw.githubusercontent.com/nicktaras/json_mocks/b049c9f4e904690156ec0626a707c9007554f755/remixNFT2.svg",
   data: [
     {
@@ -52,4 +52,4 @@ imageGenerator({
 // "https://www.ledr.com/colours/white.jpg",
 // "https://s3-us-west-2.amazonaws.com/s.cdpn.io/13471/sparkles.gif",
 // "https://i.pinimg.com/originals/a9/e5/06/a9e506364ae6b6892e6a126a2f021206.gif",
-// "https://en.wikipedia.org/wiki/Scalable_Vector_Graphics#/media/File:SVG_Logo.svg",
+// "https://upload.wikimedia.org/wikipedia/commons/4/4f/SVG_Logo.svg",
