@@ -24,12 +24,6 @@ https://www.npmjs.com/package/html-to-image
 
 1. Review this as a means to get more accurate screen captures / switching out the timer! https://docs.percy.io/docs/capturing-lazy-loading-images
 
-#### TEST IMAGES:
-
-Black: "https://lh3.googleusercontent.com/proxy/-KAp5YC1yMBjIlPeH__McUcZx45EujFWjmoQZ4LifgyNQNLj_8gh9qHC_JOQzqZZgNoVkBtFrbwxD_Li45pUxNIpavxpkisSBMrig0YjtmiHbvUl950FlhSsgirpNZNypkEGNCPbaVas_HPI0L48qxkEuy-3JDYJ0Itw8OMYKmnaCsdbLkbJWaftDFlwEKU8Gj4Npjdn7nZA_x-HvLTWGOLJr1Ec25Yq3g8gXY_C7vhC",
-
-White: "https://www.ledr.com/colours/white.jpg",
-
 ## Development (app-poc) 
 
 1. Open the folder `app-poc`
