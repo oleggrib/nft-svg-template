@@ -1,12 +1,18 @@
 const fs = require('fs');
 const puppeteer = require('puppeteer');
-const isLightContrastImage = require('./isLightContrastImage');
+// const isLightContrastImage = require('./isLightContrastImage');
+
+// Enable for SVG to be converted to Base64
+const svgDim = require('svg-dimensions');
+const svg64 = require('svg64');
 
 const fetch = require('node-fetch');
 const sizeOf = require('image-size');
 
 // HTML Templates
+// const signedHtmlTemplate = require("./htmlTemplates/signed");
 const signedHtmlTemplate = require("./htmlTemplates/signed");
+const notSignedHtmlTemplate = require("./htmlTemplates/notSigned");
 
 /*
   FUNCTION: 
@@ -31,35 +37,50 @@ const signedHtmlTemplate = require("./htmlTemplates/signed");
 */
 
 module.exports = async (
+  title="Requesting",
   imageUrl="", 
   data={}, 
   base64Encode=true 
 ) => {
 
   const imageUrlData = await fetch(imageUrl);
-  const imageBuffer = await imageUrlData.buffer();
   const contentType = await imageUrlData.headers.get('content-type');
-  const imageBas64 = `data:image/${contentType};base64,`+imageBuffer.toString('base64');
 
-  // Get image dimensions
-  const dimensions = sizeOf(imageBuffer);
-  const imgH = dimensions.height;
-  const imgW = dimensions.width;
+  // variable to store image in Base64 format
+  let imageBase64;
+  let imgH = 0;
+  let imgW = 0;
 
-  // Development use only
-  // const imgH = 500;
-  // const imgW = 500;
+  // If SVG
+  if (contentType.indexOf("svg") > -1) {
+    // Get SVG element from response
+    const svg = await imageUrlData.text();
+    // Base64 encode SVG
+    imageBase64 = svg64(svg);
+    const dimensions = sizeOf(imageBase64);
+    // getBBox
+    imgH = 1;
+    imgW = 1;
+  }
+  // If other (PNG, JPG, Gif)
+  if (contentType.indexOf("svg") <= -1) {
+    const imageBuffer = await imageUrlData.buffer();
+    imageBase64 = `data:image/${contentType};base64,`+imageBuffer.toString('base64');
+    const dimensions = sizeOf(imageBuffer);
+    imgH = dimensions.height;
+    imgW = dimensions.width;
+  }
   
   // get the image colour (returns a boolean is image is either dark or light)
   // With this boolean we can decide the colour of the fonts/elements to apply
-  const isLightImage = true
-   await isLightContrastImage({
-    x: imgW - (imgW / 2), // start x
-    y: 0, // start y
-    dx: imgW, // end x
-    dy: imgH, // end y
-    imageUrl 
-  });
+  const isLightImage = true;
+  //  await isLightContrastImage({
+  //   x: imgW - (imgW / 2), // start x
+  //   y: 0, // start y
+  //   dx: imgW, // end x
+  //   dy: imgH, // end y
+  //   imageUrl 
+  // });
 
   // For debugging
   // console.log('image is light? ', isLightImage);
@@ -71,7 +92,14 @@ module.exports = async (
   const page = await browser.newPage();
 
   // set page content to template (with loaded method - this needs further testing)
-  await page.setContent(signedHtmlTemplate, { waitUntil: 'networkidle2' });
+  const htmlPageTemplates = {
+    "REQUESTING": signedHtmlTemplate,
+    "SIGNED": signedHtmlTemplate,
+  }
+
+  // Load the HTML template based on the given title from params
+  // TODO Extract the template selection logic from this main function.
+  await page.setContent(htmlPageTemplates[title.toUpperCase], { waitUntil: 'networkidle2' });
 
   // This is applied to help ensure images are not blocked by other servers.
   // additional data maybe required to ensure images are successfully retrieved
@@ -83,7 +111,7 @@ module.exports = async (
     isLightImage,
     imgH,
     imgW,
-    imageBas64,
+    imageBase64,
   }) => {
 
     // Define if the colour theme for text is black or white.
@@ -95,19 +123,23 @@ module.exports = async (
     var months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
     const dateStamp = `${d.getDate()}${months[n]}${d.getFullYear()}`;
     
+    // maybe we it can organically get the width
     document.getElementById('nft-container').style.height = imgH + 'px';
     document.getElementById('nft-container').style.width = imgW + 'px';
     
     // add nft background image
-    document.getElementById('nft-container').style.backgroundImage = "url("+imageBas64+")";
+    document.getElementById('nft-container').style.backgroundImage = "url("+imageBase64+")";
     
     // add timestamp (top righthand side)
     document.getElementById('mark').innerHTML = `${data[0].mark}.${dateStamp}`;
     
+    // Title/Type of NFT
+    document.getElementById('status').innerHTML = title;
+    
     // apply font colour to elements
     document.getElementById('mark').style.color = colourTheme;
     document.getElementById('status').style.color = colourTheme;
-    
+        
     // add labels
     data.map((label, index) => {
       if (index < 3) { // 3 is max ammount of autographs that can show on screen.
@@ -152,7 +184,7 @@ module.exports = async (
     isLightImage,
     imgH,
     imgW,
-    imageBas64,
+    imageBase64,
   });
 
   // For debugging only (outputs image to local directory):

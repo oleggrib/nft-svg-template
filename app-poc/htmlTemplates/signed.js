@@ -132,9 +132,9 @@ module.exports = `
       body {
         color: white;
       }
-        
+
       #nft-container {
-        position: relative; width: 600px; height: 600px; background-size: cover;
+        position: relative; background-size: cover; min-width: 300px;
       }
       #time-stamp {
         font-family: 'Barlow';
@@ -155,13 +155,14 @@ module.exports = `
         font-family: 'Barlow'; font-stretch: condensed;
         height: 28px; 
         margin: 1px 0; 
-        display: 
-        flex; align-items:center; 
+        display: flex; 
+        align-items: center; 
         background-color: rgba(0,0,0,0.24); 
         backdrop-filter: blur(5px); 
         backdrop-filter: blur(5px); 
-        padding: 7px; b
-        order-radius: 3px;
+        padding: 7px;
+        border-radius: 3px;
+        max-width: 90%;
       }
       .photo-url {
         width: 28px; height: 28px; border-radius: 28px;
