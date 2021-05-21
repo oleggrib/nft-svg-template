@@ -1,6 +1,5 @@
 fs = require('fs');
 const imageGenerator = require("./imageGenerator");
-const fetch = require('node-fetch');
 
 // imageUrl
 // data: [
@@ -14,13 +13,12 @@ const fetch = require('node-fetch');
 // ],
 // base64Encode
 
-imageGenerator(
-  // "https://en.wikipedia.org/wiki/Scalable_Vector_Graphics#/media/File:SVG_Logo.svg",
-  "https://cloudfront-us-east-1.images.arcpublishing.com/advancelocal/KNWPMQAGMFDULEQK4OGJ2YR4DE.jpg",
-  // "https://www.ledr.com/colours/white.jpg",
-  // "https://s3-us-west-2.amazonaws.com/s.cdpn.io/13471/sparkles.gif",
-  // "https://i.pinimg.com/originals/a9/e5/06/a9e506364ae6b6892e6a126a2f021206.gif",
-  [
+imageGenerator({
+  base64Encode: true,
+  title: "Requesting",
+  templateType: "REQUESTING",
+  imageUrl:"https://raw.githubusercontent.com/nicktaras/json_mocks/b049c9f4e904690156ec0626a707c9007554f755/remixNFT2.svg",
+  data: [
     {
       title: "Bob",
       photoURL: "https://pbs.twimg.com/profile_images/1196498439304929281/c87NCmb0_400x400.jpg",
@@ -42,17 +40,16 @@ imageGenerator(
       twitterId: "@Bar",
       mark: "12789097654321"
     },
-  ],
-  true
-).then((res) => {
-
-  // console.log(res);
-
-  // NOTE: For the image alignment to work
-  // You have to drag/drop the SVG into the browser.
-  // I'll look into this issue.
-  fs.writeFile('test.svg', res, function (err) {
+  ]
+}).then((res) => {
+  fs.writeFile('remixNFT.svg', res, function (err) {
     if (err) return console.log(err);
     console.log('Success');
   });
 });
+
+// Example images to test:
+// "https://www.ledr.com/colours/white.jpg",
+// "https://s3-us-west-2.amazonaws.com/s.cdpn.io/13471/sparkles.gif",
+// "https://i.pinimg.com/originals/a9/e5/06/a9e506364ae6b6892e6a126a2f021206.gif",
+// "https://en.wikipedia.org/wiki/Scalable_Vector_Graphics#/media/File:SVG_Logo.svg",

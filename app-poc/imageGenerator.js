@@ -1,12 +1,13 @@
 const fs = require('fs');
 const puppeteer = require('puppeteer');
-const isLightContrastImage = require('./isLightContrastImage');
+// const isLightContrastImage = require('./isLightContrastImage');
 
 const fetch = require('node-fetch');
 const sizeOf = require('image-size');
 
 // HTML Templates
 const signedHtmlTemplate = require("./htmlTemplates/signed");
+const notSignedHtmlTemplate = require("./htmlTemplates/notSigned");
 
 /*
   FUNCTION: 
@@ -30,17 +31,20 @@ const signedHtmlTemplate = require("./htmlTemplates/signed");
   }
 */
 
-module.exports = async (
-  imageUrl="", 
-  data={}, 
-  base64Encode=true,
-  title="Signed"
-) => {
+module.exports = async ({
+  templateType="Requesting",
+  base64Encode,
+  title,
+  imageUrl,
+  data
+}) => {
 
+  // Fetch image to feed into puppeteer and do some initial
+  // data collection & setup
   const imageUrlData = await fetch(imageUrl);
   const imageBuffer = await imageUrlData.buffer();
   const contentType = await imageUrlData.headers.get('content-type');
-  const imageBas64 = `data:image/${contentType};base64,`+imageBuffer.toString('base64');
+  const imageBase64 = `data:image/${contentType};base64,`+imageBuffer.toString('base64');
 
   // Get image dimensions
   const dimensions = sizeOf(imageBuffer);
@@ -54,13 +58,13 @@ module.exports = async (
   // get the image colour (returns a boolean is image is either dark or light)
   // With this boolean we can decide the colour of the fonts/elements to apply
   const isLightImage = true
-   await isLightContrastImage({
-    x: imgW - (imgW / 2), // start x
-    y: 0, // start y
-    dx: imgW, // end x
-    dy: imgH, // end y
-    imageUrl 
-  });
+  //  await isLightContrastImage({
+  //   x: imgW - (imgW / 2), // start x
+  //   y: 0, // start y
+  //   dx: imgW, // end x
+  //   dy: imgH, // end y
+  //   imageUrl 
+  // });
 
   // For debugging
   // console.log('image is light? ', isLightImage);
@@ -73,14 +77,17 @@ module.exports = async (
 
   // set page content to template based on the input title.
   // TODO: Consider using a param to explicitly define the template for use.
-  switch(title.toUpperCase) {
-    case "REQUESTED":
-      await page.setContent(signedHtmlTemplate, { waitUntil: 'networkidle2' });
+  switch(templateType) {
+    case "REQUESTING":
+      console.log("Requested Template Loaded");
+      await page.setContent(notSignedHtmlTemplate, { waitUntil: 'networkidle2' });
       break;
     case "SIGNED":
+      console.log("Signed Template Loaded");
       await page.setContent(signedHtmlTemplate, { waitUntil: 'networkidle2' });
       break;
     default:
+      console.log("Default Template Loaded");
       await page.setContent(signedHtmlTemplate, { waitUntil: 'networkidle2' });
   }
 
@@ -90,11 +97,12 @@ module.exports = async (
 
   // evaluate page / dom
   var imageOutput = await page.evaluate(async ({ 
+    title,
     data, 
     isLightImage,
     imgH,
     imgW,
-    imageBas64,
+    imageBase64,
   }) => {
 
     // Define if the colour theme for text is black or white.
@@ -110,15 +118,22 @@ module.exports = async (
     document.getElementById('nft-container').style.width = imgW + 'px';
     
     // add nft background image
-    document.getElementById('nft-container').style.backgroundImage = "url("+imageBas64+")";
+    document.getElementById('nft-container').style.backgroundImage = "url("+imageBase64+")";
     
     // add timestamp (top righthand side)
     document.getElementById('mark').innerHTML = `${data[0].mark}.${dateStamp}`;
+
+    // apply title "requesting" or "signed"
+    document.getElementById('status').innerHTML = `${title}:`;
     
     // apply font colour to elements
     document.getElementById('mark').style.color = colourTheme;
     document.getElementById('status').style.color = colourTheme;
     
+    // TODO - Confirm how the labels are loaded each time
+    // e.g. do we recieved a list of all, or just the last.
+    document.getElementById('label-container').innerHTML = "";
+
     // add labels
     data.map((label, index) => {
       if (index < 3) { // 3 is max ammount of autographs that can show on screen.
@@ -157,13 +172,12 @@ module.exports = async (
     
     return output;
   }, {
-    imageUrl, 
+    title,
     data, 
-    base64Encode,
     isLightImage,
     imgH,
     imgW,
-    imageBas64,
+    imageBase64,
   });
 
   // For debugging only (outputs image to local directory):
