@@ -173,7 +173,7 @@ module.exports = `
   </head>
   <body>
     <div id="outputWrapper">
-      <div id="nft-container" style="background: url('https://www.verizon.com/about/sites/default/files/2020-11/metaverse-%231.jpg'); background-size: cover;">
+      <div id="nft-container" style="background: url(''); background-size: cover;">
         <div class="mark-container">
           <p id="mark">
             1507.18FEB2021

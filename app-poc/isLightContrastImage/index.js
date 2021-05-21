@@ -73,9 +73,13 @@ const detect = async ({
   return result[0].palette;
 }
 
-module.exports = async (
-  imageUrl=""
-) => {
+module.exports = async ({
+  x,
+  y,
+  dx,
+  dy,
+  imageUrl
+}) => {
 
   // fetch given image
   const responce = await fetch(imageUrl);
@@ -97,6 +101,6 @@ module.exports = async (
   // For debugging
   // console.log(output);
 
-  return output === "#ffffff" ? true : false;
+  return !(output === "#ffffff") ? true : false;
 
 };
