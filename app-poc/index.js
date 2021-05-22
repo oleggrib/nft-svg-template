@@ -41,20 +41,9 @@ imageGenerator({
       twitterId: "@Bar",
       mark: "12789097654321"
     },
-    {
-      title: "Bar",
-      photoURL: "https://pbs.twimg.com/profile_images/1196498439304929281/c87NCmb0_400x400.jpg",
-      name: "Bar",
-      twitterId: "@Bar",
-      mark: "12789097654321"
-    },
   ]
 }).then((res) => {
-
-  let removeStartOfHTML = res.replace("<html><head></head><body>", "");
-  let removeEndOfHTML = removeStartOfHTML.replace("</body></html>", "");
-
-  fs.writeFile('remixNFT.svg', removeEndOfHTML, function (err) {
+  fs.writeFile('remixNFT.svg', res, function (err) {
     if (err) return console.log(err);
     console.log('Success');
   });
