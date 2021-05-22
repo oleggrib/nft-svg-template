@@ -131,6 +131,19 @@ module.exports = async ({
   // add all labels
   $('.label-container').eq(0).html(`${labelTemplates}`);
 
-  return $.html();
+  // return $.html();
+  // prepare output
+  const removeList = [
+    "<html><head></head><body>",
+    "</body></html>"
+  ];
+
+  let output = $.html();
+
+  removeList.map((item) => {
+    output = output.replace(item, "");
+  })
+
+  return output;
 
 }

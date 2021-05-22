@@ -43,11 +43,7 @@ imageGenerator({
     },
   ]
 }).then((res) => {
-
-  let removeStartOfHTML = res.replace("<html><head></head><body>", "");
-  let removeEndOfHTML = removeStartOfHTML.replace("</body></html>", "");
-
-  fs.writeFile('remixNFT.svg', removeEndOfHTML, function (err) {
+  fs.writeFile('remixNFT.svg', res, function (err) {
     if (err) return console.log(err);
     console.log('Success');
   });
