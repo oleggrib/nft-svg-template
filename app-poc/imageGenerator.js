@@ -1,16 +1,16 @@
-const fs = require('fs');
-const puppeteer = require('puppeteer');
+const cheerio = require('cheerio');
 // const isLightContrastImage = require('./isLightContrastImage');
 
 // Enable for SVG to be converted to Base64
 const svg64 = require('svg64');
-
 const fetch = require('node-fetch');
 const sizeOf = require('image-size');
 
-// HTML Templates
-const signedHtmlTemplate = require("./htmlTemplates/signed");
-const notSignedHtmlTemplate = require("./htmlTemplates/notSigned");
+// SVG Templates:
+const templates = {
+  "REQUESTING": require("./htmlTemplates/notSignedSVG"),
+  "SIGNED": require("./htmlTemplates/signedSVG")
+}
 
 /*
   FUNCTION: 
@@ -35,20 +35,25 @@ const notSignedHtmlTemplate = require("./htmlTemplates/notSigned");
 */
 
 module.exports = async ({
-  templateType="Requesting",
+  templateType="REQUESTING",
   base64Encode,
   title,
   imageUrl,
   data
 }) => {
 
+  // load SVG template type
+  const $ = cheerio.load(templates[templateType]);
+
+  // Fetch the NFT Data 
   const imageUrlData = await fetch(imageUrl);
+  // Get Content type
   const contentType = await imageUrlData.headers.get('content-type');
 
-  // variable to store image in Base64 format
+  // // variable to store image in Base64 format
   let imageBase64, imgH, imgW;
 
-  // If SVG
+  // // If SVG
   if (contentType.indexOf("svg") > -1) {
     // Get SVG element from response
     const svg = await imageUrlData.text();
@@ -68,135 +73,64 @@ module.exports = async ({
     imgW = dimensions.width;
   }
   
-  // get the image colour (returns a boolean is image is either dark or light)
-  // With this boolean we can decide the colour of the fonts/elements to apply
-  const isLightImage = true
-  //  await isLightContrastImage({
-  //   x: imgW - (imgW / 2), // start x
-  //   y: 0, // start y
-  //   dx: imgW, // end x
-  //   dy: imgH, // end y
-  //   imageUrl 
-  // });
+  // 
+  const isLightImage = true;
 
-  // For debugging
-  // console.log('image is light? ', isLightImage);
+  // Define if the colour theme for text is black or white.
+  const colourTheme = isLightImage ? "black" : "white";
 
-  // launch
-  const browser = await puppeteer.launch();
+  // build date stamp string
+  var d = new Date();
+  var n = d.getMonth();
+  var months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
+  const dateStamp = `${d.getDate()}${months[n]}${d.getFullYear()}`;
+  
+  // Apply NFT Background colour
+  $('.autograph-nft').eq(0).css('background-image', 'url(' + imageBase64 + ')');
+  
+  // Apply Stamp
+  $('.stamp').eq(0).html(`${data[0].mark}.${dateStamp}`);
+  
+  // Apply status
+  $('.status').eq(0).html(`${title}`);
 
-  // create page 
-  const page = await browser.newPage();
+  // Apply Labels
+  let labelTemplates = '';
+  // add labels
+  data.map((label, index) => {
+    if (index < 3) { // 3 is max ammount of autographs that can show on screen.
 
-  // set page content to template based on the input title.
-  // TODO: Consider using a param to explicitly define the template for use.
-  switch(templateType) {
-    case "REQUESTING":
-      console.log("Requested Template Loaded");
-      await page.setContent(notSignedHtmlTemplate); //, { waitUntil: 'networkidle2' });
-      break;
-    case "SIGNED":
-      console.log("Signed Template Loaded");
-      await page.setContent(signedHtmlTemplate); //, { waitUntil: 'networkidle2' });
-      break;
-    default:
-      console.log("Default Template Loaded");
-      await page.setContent(signedHtmlTemplate); //, { waitUntil: 'networkidle2' });
-  }
+      // GET Profile Photo e.g. from data
+      // https://www.cryptokitties.co/icons/logo.svg
 
-  // This is applied to help ensure images are not blocked by other servers.
-  // additional data maybe required to ensure images are successfully retrieved
-  page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36 WAIT_UNTIL=load")
-
-  // evaluate page / dom
-  var imageOutput = await page.evaluate(async ({ 
-    title,
-    data, 
-    isLightImage,
-    imgH,
-    imgW,
-    imageBase64,
-  }) => {
-
-    // Define if the colour theme for text is black or white.
-    const colourTheme = isLightImage ? "black" : "white";
-
-    // build date stamp string
-    var d = new Date();
-    var n = d.getMonth();
-    var months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
-    const dateStamp = `${d.getDate()}${months[n]}${d.getFullYear()}`;
-    
-    document.getElementById('nft-container').style.height = imgH + 'px';
-    document.getElementById('nft-container').style.width = imgW + 'px';
-    
-    // add nft background image
-    document.getElementById('nft-container').style.backgroundImage = "url("+imageBase64+")";
-    
-    // add timestamp (top righthand side)
-    document.getElementById('mark').innerHTML = `${data[0].mark}.${dateStamp}`;
-
-    // apply title "requesting" or "signed"
-    document.getElementById('status').innerHTML = `${title}:`;
-    
-    // apply font colour to elements
-    document.getElementById('mark').style.color = colourTheme;
-    document.getElementById('status').style.color = colourTheme;
-    
-    // TODO - Confirm how the labels are loaded each time
-    // e.g. do we recieved a list of all, or just the last.
-    document.getElementById('label-container').innerHTML = "";
-
-    // add labels
-    data.map((label, index) => {
-      if (index < 3) { // 3 is max ammount of autographs that can show on screen.
-        const labelTemplate = `
-          <div class="label">
-            <img
-              class="photo-url" 
-              alt=""
-              src="${label.photoURL}"  
-            >
-            <div class="autograph">
-              ${label.twitterId}.${label.mark}
-            </div>
+      labelTemplates += `
+        <div class="label">
+          <div
+            class="photo-url" 
+            style="backgroundImage: url('')"
+          ></div>
+          <div class="profile-img"></div>
+          <div class="autograph">
+            ${label.twitterId}.${label.mark}
           </div>
-        `;
-        document.getElementById('label-container').innerHTML += labelTemplate;
-      }
-    });
-
-    // when there are too many autographs to display, add the length of the additional.
-    if (data.length > 3) { 
-      document.getElementById('label-container').innerHTML += `
-      <div class="label">
-        AND ${data.length -3} MORE...
-      </div>
-    `;
-    };
-
-    // SVG output
-    let output = await domtoimage.toSvg(document.getElementById('outputWrapper'), {});
-    output = output.replace(/%0A/g, '');
-    output = output.replace("data:image/svg+xml;charset=utf-8,", "");
-
-    // Return PNG (Base64 encoded)
-    // let output = await domtoimage.toPng(document.getElementById('outputWrapper'), { quality: 0.95 });
-    
-    return output;
-  }, {
-    title,
-    data, 
-    isLightImage,
-    imgH,
-    imgW,
-    imageBase64,
+        </div>
+      `;
+    }
   });
+  
+  // when there are too many autographs to display, add the length of the additional.
+  if (data.length > 3) { 
+    const maxLabelTemplate = `
+    <div class="label">
+      AND ${data.length -3} MORE...
+    </div>
+  `;
+    labelTemplates += maxLabelTemplate;
+  };
+  
+  // add all labels
+  $('.label-container').eq(0).html(`${labelTemplates}`);
 
-  // For debugging only (outputs image to local directory):
-  await page.screenshot({ path: 'puppeteerScreenShot.png' });
+  return $.html();
 
-  await browser.close();
-
-  return imageOutput;
 }
