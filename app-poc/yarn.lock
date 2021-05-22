@@ -1532,6 +1532,11 @@ string_decoder@^1.1.1:
   dependencies:
     safe-buffer "~5.2.0"
 
+svg64@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/svg64/-/svg64-1.1.0.tgz#51f2c9f52675c59fd921ed9bddc5169501664973"
+  integrity sha512-9qfEr8mXxA/sgoybuCfCM72iiRplE6J1qCpCtljr1+C/UccVvRxz/sHBf/JQ7tsuXSm+p02Al1mP4DreJB7Edw==
+
 tar-fs@^2.0.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/tar-fs/-/tar-fs-2.1.1.tgz#489a15ab85f1f0befabb370b7de4f9eb5cbe8784"

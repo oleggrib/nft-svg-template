@@ -5,6 +5,7 @@ const imageGenerator = require("./imageGenerator");
 // data: [
 // {
 //    title: string; (Title of NFT)
+//    templateType: "SIGNED" or "REQUESTING"
 //    photoURL: string; (Photo of Twitter User)
 //    name: string; (Name of Twitter User)
 //    twitterId: string; (Handle)
@@ -14,14 +15,14 @@ const imageGenerator = require("./imageGenerator");
 // base64Encode
 
 imageGenerator({
-  base64Encode: true, // TODO implement a non-base64
-  title: "Signed", // View Text NFT Copy
-  templateType: "SIGNED", // "SIGNED" OR "REQUESTING"
-  imageUrl: "https://polkadot.network/content/images/2020/06/Polkadot_OG.png",
+  base64Encode: true,
+  title: "Signed",
+  templateType: "REQUESTING",
+  imageUrl: "https://i.pinimg.com/originals/a9/e5/06/a9e506364ae6b6892e6a126a2f021206.gif",
   data: [
     {
       title: "Bob",
-      photoURL: "https://pbs.twimg.com/profile_images/1196498439304929281/c87NCmb0_400x400.jpg",
+      photoURL: "https://i.pinimg.com/originals/a9/e5/06/a9e506364ae6b6892e6a126a2f021206.gif",
       name: "Bob",
       twitterId: "@Bob",
       mark: "17654321"
@@ -42,7 +43,11 @@ imageGenerator({
     },
   ]
 }).then((res) => {
-  fs.writeFile('remixNFT.svg', res, function (err) {
+
+  let removeStartOfHTML = res.replace("<html><head></head><body>", "");
+  let removeEndOfHTML = removeStartOfHTML.replace("</body></html>", "");
+
+  fs.writeFile('remixNFT.svg', removeEndOfHTML, function (err) {
     if (err) return console.log(err);
     console.log('Success');
   });
