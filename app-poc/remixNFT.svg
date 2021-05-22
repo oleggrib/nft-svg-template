@@ -182,7 +182,7 @@
         <div class="status">Signed</div>
         <div class="label-container">
         <div class="label">
-          <div class="photo-url" style="backgroundImage: url('imageBase64')"></div>
+          <div class="photo-url" style="backgroundImage: url('')"></div>
           <div class="profile-img"></div>
           <div class="autograph">
             @Bob.17654321
@@ -190,7 +190,7 @@
         </div>
       
         <div class="label">
-          <div class="photo-url" style="backgroundImage: url('imageBase64')"></div>
+          <div class="photo-url" style="backgroundImage: url('')"></div>
           <div class="profile-img"></div>
           <div class="autograph">
             @Alice.123456789097654321
@@ -198,13 +198,17 @@
         </div>
       
         <div class="label">
-          <div class="photo-url" style="backgroundImage: url('imageBase64')"></div>
+          <div class="photo-url" style="backgroundImage: url('')"></div>
           <div class="profile-img"></div>
           <div class="autograph">
             @Bar.12789097654321
           </div>
         </div>
-      </div>
+      
+    <div class="label">
+      AND 1 MORE...
+    </div>
+  </div>
       </div>
     </div>
   </foreignObject>
