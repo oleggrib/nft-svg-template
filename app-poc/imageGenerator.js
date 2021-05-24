@@ -67,9 +67,11 @@ module.exports = async ({
       imgW = viewBox[2];
       imgH = viewBox[3];
     } else { // TODO Ensure that we always know the image size
-      imgW = 1000;
-      imgH = 1000;
+      imgW = 1001;
+      imgH = 1001;
     }
+
+    console.log(imgH, imgW);
 
   }
 
