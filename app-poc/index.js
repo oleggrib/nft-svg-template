@@ -18,7 +18,7 @@ imageGenerator({
   base64Encode: true,
   title: "Signed",
   templateType: "REQUESTING",
-  imageUrl: "https://i.pinimg.com/originals/a9/e5/06/a9e506364ae6b6892e6a126a2f021206.gif",
+  imageUrl: "https://upload.wikimedia.org/wikipedia/commons/4/4f/SVG_Logo.svg",
   data: [
     {
       title: "Bob",

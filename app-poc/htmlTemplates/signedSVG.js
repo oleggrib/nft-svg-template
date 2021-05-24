@@ -148,7 +148,7 @@ module.exports = `
       font-family: 'Source Code Pro', monospace; text-align: right; margin: 14px 0;
     }
   </style>
-  <foreignObject x="0" y="0" width="400" height="400">
+  <foreignObject x="0" y="0" width="400" height="400" class="autograph-nft-fo">
     <div class="autograph-nft" xmlns="http://www.w3.org/1999/xhtml">
       <div class="stamp-container">
         <div class="stamp">

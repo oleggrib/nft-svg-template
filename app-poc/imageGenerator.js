@@ -53,16 +53,17 @@ module.exports = async ({
   // // variable to store image in Base64 format
   let imageBase64, imgH, imgW;
 
-  // // If SVG
+  // If SVG
   if (contentType.indexOf("svg") > -1) {
     // Get SVG element from response
     const svg = await imageUrlData.text();
+    // [x, y, width, height]
+    const viewBox = $(svg).attr('viewBox').split(' ');
     // Base64 encode SVG
     imageBase64 = svg64(svg);
-    // const dimensions = sizeOf(imageBase64);
-    // getBBox
-    imgH = 2000;
-    imgW = 2000;
+    // apply height width of SVG from ViewBox values
+    imgW = viewBox[2];
+    imgH = viewBox[3];
   }
   // If other (PNG, JPG, Gif)
   if (contentType.indexOf("svg") <= -1) {
@@ -72,7 +73,14 @@ module.exports = async ({
     imgH = dimensions.height;
     imgW = dimensions.width;
   }
-  
+
+  // Apply output height and width
+  if(imgW && imgH) {
+    // apply height and width: to autograph-nft-wrapper + autograph-nft-fo
+    $('.autograph-nft-wrapper').eq(0).attr({ height: imgH, width: imgW });
+    $('.autograph-nft-fo').eq(0).attr({ height: imgH, width: imgW });
+  }
+
   // 
   const isLightImage = true;
 
@@ -131,15 +139,20 @@ module.exports = async ({
   // add all labels
   $('.label-container').eq(0).html(`${labelTemplates}`);
 
-  // return $.html();
+  // Cheerio provides the changes within a html document format
+  // to return the SVG we remove this and provide the SVG 
+  // data only
+
   // prepare output
   const removeList = [
     "<html><head></head><body>",
     "</body></html>"
   ];
 
+  // output is SVG wrapped in html
   let output = $.html();
 
+  // remove the outer html wrapper
   removeList.map((item) => {
     output = output.replace(item, "");
   })
