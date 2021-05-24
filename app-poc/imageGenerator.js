@@ -51,6 +51,8 @@ module.exports = async ({
   // variable to store image in Base64 format
   let imageBase64, imgH, imgW;
 
+  console.time("Application");
+
   // if SVG
   if (contentType.indexOf("svg") > -1) {
     
@@ -93,7 +95,6 @@ module.exports = async ({
     const shortestInLength = imgW < imgH ? imgW : imgH;
     // using REM calculate the template layout scale (design original based from a 400px width)
     const rootPixelSize = shortestInLength / 16 * 0.64;
-    console.log('rootPixelSize', rootPixelSize);
     // Apply Calculation
     $('.autograph-nft-wrapper').eq(0).css({ 'font-size': rootPixelSize + 'px' });
     // apply height and width: to autograph-nft-wrapper + autograph-nft-fo
@@ -193,6 +194,9 @@ module.exports = async ({
   removeList.map((item) => {
     output = output.replace(item, "");
   })
+
+  console.log("Type: " + contentType + " Size W: " + imgW + " Size H: " + imgH);
+  console.timeEnd("Application");
 
   return output;
 
