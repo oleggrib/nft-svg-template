@@ -1,5 +1,5 @@
 const cheerio = require('cheerio');
-// const isLightContrastImage = require('./isLightContrastImage');
+const isLightContrastImage = require('./isLightContrastImage');
 
 // Enable for SVG to be converted to Base64
 const svg64 = require('svg64');
@@ -51,18 +51,29 @@ module.exports = async ({
   // variable to store image in Base64 format
   let imageBase64, imgH, imgW;
 
+  console.time("Application");
+
   // if SVG
   if (contentType.indexOf("svg") > -1) {
     
     // get SVG element from response
     const svg = await imageUrlData.text();
     // [x, y, width, height]
+
     const viewBox = $(svg).attr('viewBox').split(' ');
     // base64 encode SVG
     imageBase64 = svg64(svg);
-    // apply height width of SVG from ViewBox values
-    imgW = viewBox[2];
-    imgH = viewBox[3];
+
+    if(viewBox){
+      // apply height width of SVG from ViewBox values
+      imgW = viewBox[2];
+      imgH = viewBox[3];
+    } else { // TODO Ensure that we always know the image size
+      imgW = 1001;
+      imgH = 1001;
+    }
+
+    console.log(imgH, imgW);
 
   }
 
@@ -84,7 +95,6 @@ module.exports = async ({
     const shortestInLength = imgW < imgH ? imgW : imgH;
     // using REM calculate the template layout scale (design original based from a 400px width)
     const rootPixelSize = shortestInLength / 16 * 0.64;
-    console.log('rootPixelSize', rootPixelSize);
     // Apply Calculation
     $('.autograph-nft-wrapper').eq(0).css({ 'font-size': rootPixelSize + 'px' });
     // apply height and width: to autograph-nft-wrapper + autograph-nft-fo
@@ -92,12 +102,6 @@ module.exports = async ({
     $('.autograph-nft-fo').eq(0).attr({ height: imgH, width: imgW });
 
   }
-
-  // 
-  const isLightImage = true;
-
-  // Define if the colour theme for text is black or white.
-  const colourTheme = isLightImage ? "black" : "white";
 
   // build date stamp string
   var d = new Date();
@@ -149,6 +153,30 @@ module.exports = async ({
   // add all labels
   $('.label-container').eq(0).html(`${labelTemplates}`);
 
+  // integrate smarts here (Get colour)
+  let isLightImage = true;
+
+  // TODO create SVG version of isLightContrastImage()
+
+  // not SVG
+  if (contentType.indexOf("svg") <= -1) {
+    isLightImage = await isLightContrastImage({
+      x: imgW - (imgW / 2), // start x
+      y: 0, // start y
+      dx: imgW, // end x
+      dy: imgH, // end y
+      imageUrl 
+    });
+  }
+
+  // Define if the colour theme for text is black or white.
+  const colourTheme = isLightImage ? "black" : "white";
+  const labelbackgroundCRBGA = isLightImage ? "rgba(0,0,0,0.24)" : "rgba(255,255,255,0.24)";
+
+  // apply white / black colour theme
+  $('.label, .not-signed').css("background-color", labelbackgroundCRBGA);
+  $('.label, .autograph, .not-signed, .status, .stamp').css({ 'color': colourTheme });
+
   // Cheerio provides the changes within a html document format
   // to return the SVG we remove this and provide the SVG 
   // data only
@@ -166,6 +194,9 @@ module.exports = async ({
   removeList.map((item) => {
     output = output.replace(item, "");
   })
+
+  console.log("Type: " + contentType + " Size W: " + imgW + " Size H: " + imgH);
+  console.timeEnd("Application");
 
   return output;
 

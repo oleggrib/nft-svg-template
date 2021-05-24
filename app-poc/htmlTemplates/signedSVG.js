@@ -122,7 +122,7 @@ module.exports = `
         background-size: cover;
     }
     .autograph-nft .stamp-container {
-      position: absolute; top: 1.2rem; right: 2.2rem;
+      position: absolute; top: 1.2rem; right: 1.2rem; width: 1rem;
     }
     .autograph-nft .stamp-container .stamp {
       font-family: 'Source Code Pro', monospace; writing-mode: vertical-rl; font-size: 1rem;
