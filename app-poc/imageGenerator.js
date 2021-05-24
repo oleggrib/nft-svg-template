@@ -44,35 +44,55 @@ module.exports = async ({
 
   // load SVG template type
   const $ = cheerio.load(templates[templateType]);
-
-  // Fetch the NFT Data 
+  // fetch the NFT Data 
   const imageUrlData = await fetch(imageUrl);
-  // Get Content type
+  // get Content type
   const contentType = await imageUrlData.headers.get('content-type');
-
-  // // variable to store image in Base64 format
+  // variable to store image in Base64 format
   let imageBase64, imgH, imgW;
 
-  // // If SVG
+  // if SVG
   if (contentType.indexOf("svg") > -1) {
-    // Get SVG element from response
+    
+    // get SVG element from response
     const svg = await imageUrlData.text();
-    // Base64 encode SVG
+    // [x, y, width, height]
+    const viewBox = $(svg).attr('viewBox').split(' ');
+    // base64 encode SVG
     imageBase64 = svg64(svg);
-    // const dimensions = sizeOf(imageBase64);
-    // getBBox
-    imgH = 2000;
-    imgW = 2000;
+    // apply height width of SVG from ViewBox values
+    imgW = viewBox[2];
+    imgH = viewBox[3];
+
   }
-  // If other (PNG, JPG, Gif)
+
+  // if other (PNG, JPG, Gif)
   if (contentType.indexOf("svg") <= -1) {
+
     const imageBuffer = await imageUrlData.buffer();
     imageBase64 = `data:image/${contentType};base64,`+imageBuffer.toString('base64');
     const dimensions = sizeOf(imageBuffer);
     imgH = dimensions.height;
     imgW = dimensions.width;
+
   }
-  
+
+  // set the image height and width and apply scale of labelling to image
+  if(imgW && imgH) {
+
+    // determine shortest in length (so we can apply the most suitable labelling).
+    const shortestInLength = imgW < imgH ? imgW : imgH;
+    // using REM calculate the template layout scale (design original based from a 400px width)
+    const rootPixelSize = shortestInLength / 16 * 0.64;
+    console.log('rootPixelSize', rootPixelSize);
+    // Apply Calculation
+    $('.autograph-nft-wrapper').eq(0).css({ 'font-size': rootPixelSize + 'px' });
+    // apply height and width: to autograph-nft-wrapper + autograph-nft-fo
+    $('.autograph-nft-wrapper').eq(0).attr({ height: imgH, width: imgW });
+    $('.autograph-nft-fo').eq(0).attr({ height: imgH, width: imgW });
+
+  }
+
   // 
   const isLightImage = true;
 
@@ -87,10 +107,8 @@ module.exports = async ({
   
   // Apply NFT Background colour
   $('.autograph-nft').eq(0).css('background-image', 'url(' + imageBase64 + ')');
-  
   // Apply Stamp
   $('.stamp').eq(0).html(`${data[0].mark}.${dateStamp}`);
-  
   // Apply status
   $('.status').eq(0).html(`${title}`);
 
@@ -131,15 +149,20 @@ module.exports = async ({
   // add all labels
   $('.label-container').eq(0).html(`${labelTemplates}`);
 
-  // return $.html();
+  // Cheerio provides the changes within a html document format
+  // to return the SVG we remove this and provide the SVG 
+  // data only
+
   // prepare output
   const removeList = [
     "<html><head></head><body>",
     "</body></html>"
   ];
 
+  // output is SVG wrapped in html
   let output = $.html();
 
+  // remove the outer html wrapper
   removeList.map((item) => {
     output = output.replace(item, "");
   })
