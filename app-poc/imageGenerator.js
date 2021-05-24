@@ -57,12 +57,19 @@ module.exports = async ({
     // get SVG element from response
     const svg = await imageUrlData.text();
     // [x, y, width, height]
+
     const viewBox = $(svg).attr('viewBox').split(' ');
     // base64 encode SVG
     imageBase64 = svg64(svg);
-    // apply height width of SVG from ViewBox values
-    imgW = viewBox[2];
-    imgH = viewBox[3];
+
+    if(viewBox){
+      // apply height width of SVG from ViewBox values
+      imgW = viewBox[2];
+      imgH = viewBox[3];
+    } else { // TODO Ensure that we always know the image size
+      imgW = 1000;
+      imgH = 1000;
+    }
 
   }
 
@@ -144,15 +151,15 @@ module.exports = async ({
   $('.label-container').eq(0).html(`${labelTemplates}`);
 
   // integrate smarts here (Get colour)
-  const isLightImage = false;
+  const isLightImage = true;
 
   // Define if the colour theme for text is black or white.
   const colourTheme = isLightImage ? "black" : "white";
   const labelbackgroundCRBGA = isLightImage ? "rgba(0,0,0,0.24)" : "rgba(255,255,255,0.24)";
 
-  // apply
+  // apply white / black colour theme
   $('.label, .not-signed').css("background-color", labelbackgroundCRBGA);
-  $('.autograph, .not-signed, .status, stamp').css({ 'color': colourTheme });
+  $('.label, .autograph, .not-signed, .status, .stamp').css({ 'color': colourTheme });
 
   // Cheerio provides the changes within a html document format
   // to return the SVG we remove this and provide the SVG 

@@ -5,20 +5,27 @@ https://www.npmjs.com/package/html-to-image
 
 ## TODO's
 
-1. SVG - Get image Size [DONE]
-2. Finalise all template styles [TODO]
-3. Connect with Hu (interface/integration)
-4. Template selection logic (Signed/Not Signed) [DONE] 
-5. Light/Dark Detector Lib API Support SVG [TODO]
-6. Scale Autograph % [TODO]
-7. Add Ellipsis (... when autograph will go out of bounds of the Remixed NFT) [TODO]
-8. Integration with web team [TODO]
+- Pull down twitter profile image [TODO]
+- Remix-able NFT's Flow e.g. When adding an already Remixed NFT [TODO]
+- Integration with web team [TODO]
+- Check image colour SVG [TODO]
+- Add Ellipsis (when autograph will go out of bounds of the Remixed NFT) [TODO]
+- [BUG] SVG sizes are not always found [TODO]
+- [BUG] - Layering, ensure SVG Images sit below content [TODO]
 
 ## TODO's DONE:
 
-- Convert input to Remixed NFT (DONE)
-- Embed Google fonts (DONE)
-- Add the logic to say '+ 4 more etc - more than 3 autographs' (DONE)
+- Animated SVG inside SVG Tests [DONE]
+- Render SVG's Readable on MAC / PC / WEB [DONE]
+- SVG - Get image Size (POC) [DONE]
+- Finalise all template styles [DONE]
+- Connect with Hu (interface/integration) [DONE]
+- Template selection logic (Signed/Not Signed) [DONE] 
+- Light/Dark Detector Lib API Support SVG [TODO]
+- Scale Autograph % [DONE]
+- Convert input to Remixed NFT [DONE]
+- Embed Google fonts [DONE]
+- Add the logic to say '+ 4 more etc - more than 3 autographs' [DONE]
 
 ## Enhancement (however this is mostly not applicable where we collect the data before simulating the browser):
 
