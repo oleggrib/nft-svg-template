@@ -5,7 +5,7 @@ https://www.npmjs.com/package/html-to-image
 
 ## TODO's
 
-1. SVG - Get image Size [TODO]
+1. SVG - Get image Size [DONE]
 2. Finalise all template styles [TODO]
 3. Connect with Hu (interface/integration)
 4. Template selection logic (Signed/Not Signed) [DONE] 

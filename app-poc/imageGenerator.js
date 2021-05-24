@@ -93,12 +93,6 @@ module.exports = async ({
 
   }
 
-  // 
-  const isLightImage = true;
-
-  // Define if the colour theme for text is black or white.
-  const colourTheme = isLightImage ? "black" : "white";
-
   // build date stamp string
   var d = new Date();
   var n = d.getMonth();
@@ -148,6 +142,17 @@ module.exports = async ({
   
   // add all labels
   $('.label-container').eq(0).html(`${labelTemplates}`);
+
+  // integrate smarts here (Get colour)
+  const isLightImage = false;
+
+  // Define if the colour theme for text is black or white.
+  const colourTheme = isLightImage ? "black" : "white";
+  const labelbackgroundCRBGA = isLightImage ? "rgba(0,0,0,0.24)" : "rgba(255,255,255,0.24)";
+
+  // apply
+  $('.label, .not-signed').css("background-color", labelbackgroundCRBGA);
+  $('.autograph, .not-signed, .status, stamp').css({ 'color': colourTheme });
 
   // Cheerio provides the changes within a html document format
   // to return the SVG we remove this and provide the SVG 

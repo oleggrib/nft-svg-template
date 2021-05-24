@@ -3,7 +3,6 @@ const imageGenerator = require("./imageGenerator");
 
 // imageUrl
 // data: [
-// {
 //    title: string; (Title of NFT)
 //    templateType: "SIGNED" or "REQUESTING"
 //    photoURL: string; (Photo of Twitter User)
@@ -17,11 +16,11 @@ const imageGenerator = require("./imageGenerator");
 imageGenerator({
   base64Encode: true,
   title: "Signed",
-  templateType: "SIGNED",
-  // imageUrl: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/13471/sparkles.gif",
+  templateType: "REQUESTING",
+  imageUrl: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/13471/sparkles.gif",
   // imageUrl: "https://upload.wikimedia.org/wikipedia/commons/4/4f/SVG_Logo.svg",
   // imageUrl: "https://i.pinimg.com/originals/a9/e5/06/a9e506364ae6b6892e6a126a2f021206.gif",
-  imageUrl: "https://polkadot.network/content/images/2020/06/Polkadot_OG.png",
+  // imageUrl: "https://polkadot.network/content/images/2020/06/Polkadot_OG.png",
   data: [
     {
       title: "Bob",
