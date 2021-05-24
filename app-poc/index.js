@@ -18,6 +18,7 @@ imageGenerator({
   title: "Signed",
   templateType: "REQUESTING",
   imageUrl: "https://storage.opensea.io/files/49a2c73a565c7847c4d2af9a2419990d.svg",
+  // imageUrl: "https://www.ledr.com/colours/white.jpg",
   // imageUrl: "https://lh3.googleusercontent.com/r-hAVIErP0UEiYUhoHU9KS53Wl25rzqpBCt2V4IzQRVxtncH2KqpU0m6_26l2eqoQSD3BWP8InLJNTomvMy2G2ZD=s0",
   // imageUrl: "https://storage.opensea.io/files/0fbeacdb0bf089800109f3b1d0401c6b.svg",
   // imageUrl: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/13471/sparkles.gif",

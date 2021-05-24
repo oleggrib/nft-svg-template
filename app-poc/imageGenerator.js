@@ -1,5 +1,5 @@
 const cheerio = require('cheerio');
-// const isLightContrastImage = require('./isLightContrastImage');
+const isLightContrastImage = require('./isLightContrastImage');
 
 // Enable for SVG to be converted to Base64
 const svg64 = require('svg64');
@@ -153,7 +153,20 @@ module.exports = async ({
   $('.label-container').eq(0).html(`${labelTemplates}`);
 
   // integrate smarts here (Get colour)
-  const isLightImage = true;
+  let isLightImage = true;
+
+  // TODO create SVG version of isLightContrastImage()
+
+  // not SVG
+  if (contentType.indexOf("svg") <= -1) {
+    isLightImage = await isLightContrastImage({
+      x: imgW - (imgW / 2), // start x
+      y: 0, // start y
+      dx: imgW, // end x
+      dy: imgH, // end y
+      imageUrl 
+    });
+  }
 
   // Define if the colour theme for text is black or white.
   const colourTheme = isLightImage ? "black" : "white";
