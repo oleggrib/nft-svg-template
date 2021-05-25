@@ -31,11 +31,11 @@ const template = require("./htmlTemplates/labelled_autograph_template");
   }
 */
 
-module.exports = async ({
-  base64Encode=true,
+module.exports = async (
   imageUrl,
-  data
-}) => {
+  data,
+  base64Encode=true,
+) => {
 
   console.time("Application");
   
