@@ -5,16 +5,17 @@ https://www.npmjs.com/package/html-to-image
 
 ## TODO's
 
-- Pull down twitter profile image [TODO]
-- Remix-able NFT's Flow e.g. When adding an already Remixed NFT [TODO]
+- Remix-able NFT's Flow e.g. When adding an already Remixed NFT [TODO/CONFIRM_IF_NEEDED]
 - Integration with web team [TODO]
 - Check image colour SVG [TODO]
-- Add Ellipsis (when autograph will go out of bounds of the Remixed NFT) [TODO]
 - [BUG] SVG sizes are not always found [TODO]
-- [BUG] - Layering, ensure SVG Images sit below content [TODO]
+- [BUG] Layering, ensure SVG Images sit below content [TODO]
+- Google Condensed Font - See if we can get this closer to the original design [TODO]
 
 ## TODO's DONE:
 
+- Add Ellipsis (when autograph will go out of bounds of the Remixed NFT) [DONE]
+- Pull down twitter profile image [DONE]
 - Animated SVG inside SVG Tests [DONE]
 - Render SVG's Readable on MAC / PC / WEB [DONE]
 - SVG - Get image Size (POC) [DONE]
