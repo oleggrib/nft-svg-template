@@ -9,11 +9,24 @@ https://www.npmjs.com/package/html-to-image
 - Integration with web team [TODO]
 - Check image colour SVG [TODO]
 - [BUG] SVG sizes are not always found [TODO]
-- [BUG] Layering, ensure SVG Images sit below content [TODO]
 - Google Condensed Font - See if we can get this closer to the original design [TODO]
+- Unit Tests
+- Webpack Build
+- Error Handling
+- Bench mark performance
+- Optimise code / increase performance
+
+### Performance Test
+
+`using imageUrl: "https://polkadot.network/content/images/2020/06/Polkadot_OG.png"`
+
+Application: 325ms (average from several tests)
+Application: 300ms (Without Google Font from several tests)
+Application: 90ms (get image URL - no processing)
 
 ## TODO's DONE:
 
+- Layering, ensure SVG Images sit below content [DONE]
 - Add Ellipsis (when autograph will go out of bounds of the Remixed NFT) [DONE]
 - Pull down twitter profile image [DONE]
 - Animated SVG inside SVG Tests [DONE]

@@ -37,6 +37,8 @@ module.exports = async ({
   data
 }) => {
 
+  console.time("Application");
+  
   // load SVG template
   const $ = cheerio.load(template);
   // fetch the NFT Data 
@@ -46,30 +48,34 @@ module.exports = async ({
   // variable to store image in Base64 format
   let imageBase64, imgH, imgW;
 
-  console.time("Application");
-
   // if SVG
   if (contentType.indexOf("svg") > -1) {
     
     // get SVG element from response
-    const svg = await imageUrlData.text();
+    const svgUrlData = await imageUrlData.text();
     // [x, y, width, height]
 
-    const viewBox = $(svg).attr('viewBox').split(' ');
     // base64 encode SVG
-    imageBase64 = svg64(svg);
+    imageBase64 = svg64(svgUrlData);
 
-    if(viewBox){
+    const svgViewBox = $("svg").attr('viewBox');
+    const svgWidth = $("svg").attr('width');
+    const svgHeight = $("svg").attr('height');
+    let svgViewBoxData = svgViewBox ? $(svg).attr('viewBox').split(' ') : undefined;
+  
+    if(svgViewBoxData){
       // apply height width of SVG from ViewBox values
-      imgW = viewBox[2];
-      imgH = viewBox[3];
-    } else { // TODO Ensure that we always know the image size
-      imgW = 1001;
-      imgH = 1001;
+      imgW = viewBoxData[2];
+      imgH = viewBoxData[3];
+    } else if(svgWidth && svgHeight) {
+      // apply height width of SVG from W/H values
+      imgW = svgWidth;
+      imgH = svgHeight;
+    } else {
+      // fallback if an image size cannot be found
+      imgW = 500;
+      imgH = 500;
     }
-
-    // console.log(imgH, imgW);
-
   }
 
   // if other (PNG, JPG, Gif)
@@ -109,7 +115,7 @@ module.exports = async ({
   // Apply Stamp
   $('.stamp').eq(0).html(`${data[0].mark}.${dateStamp}`);
   // Apply status
-  $('.status').eq(0).html(`${data[0].title}`);
+  $('.status').eq(0).html(`${data[0].title}:`);
 
   // Apply Labels
   let labelTemplates = '';
