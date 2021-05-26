@@ -1,6 +1,9 @@
 const cheerio = require('cheerio');
 const isLightContrastImage = require('./isLightContrastImage');
 
+// TODO error handling util
+// const asyncHandle = require('./asyncHandle');
+
 // Enable for SVG to be converted to Base64
 const svg64 = require('svg64');
 const fetch = require('node-fetch');
@@ -34,7 +37,7 @@ const template = require("./htmlTemplates/labelled_autograph_template");
 module.exports = async (
   imageUrl,
   data,
-  base64Encode=true,
+  base64Encode,
 ) => {
 
   console.time("Application");
@@ -46,13 +49,13 @@ module.exports = async (
   // get Content type
   const contentType = await imageUrlData.headers.get('content-type');
   // variable to store image in Base64 format
-  let imageBase64, imgH, imgW;
+  let imageBase64, imgH, imgW, imageBuffer, svgUrlData; 
 
   // if SVG
   if (contentType.indexOf("svg") > -1) {
-    
+
     // get SVG element from response
-    const svgUrlData = await imageUrlData.text();
+    svgUrlData = await imageUrlData.text();
     // [x, y, width, height]
 
     // base64 encode SVG
@@ -81,7 +84,7 @@ module.exports = async (
   // if other (PNG, JPG, Gif)
   if (contentType.indexOf("svg") <= -1) {
 
-    const imageBuffer = await imageUrlData.buffer();
+    imageBuffer = await imageUrlData.buffer();
     imageBase64 = `data:image/${contentType};base64,`+imageBuffer.toString('base64');
     const dimensions = sizeOf(imageBuffer);
     imgH = dimensions.height;
@@ -119,6 +122,7 @@ module.exports = async (
 
   // Apply Labels
   let labelTemplates = '';
+
   // add labels
   data.map((label, index) => {
     if (index < 3) { // 3 is max ammount of autographs that can show on screen.
@@ -147,15 +151,14 @@ module.exports = async (
   $('.label-container').eq(0).html(`${labelTemplates}`);
 
   // Add photos
-  data.map(async (label, index) => {
-    if (index < 3) { // 3 is max ammount of autographs that can show on screen.
-      const imagePhotoURL = await fetch(data[index].photoURL);
-      const imagePhotoURLBuffer = await imagePhotoURL.buffer();
-      const photoURLContentType = await imagePhotoURL.headers.get('content-type');
-      imagePhotoURLBase64 = `data:image/${photoURLContentType};base64,`+imagePhotoURLBuffer.toString('base64');
-      $('.profile-img').eq(index).css('background-image', 'url(' + imagePhotoURLBase64 + ')');
-    }
-  });
+  await Promise.all(data.map(async (label, index)  => {
+    const imagePhotoURL = await fetch(data[index].photoURL);
+    const imagePhotoURLBuffer = await imagePhotoURL.buffer();
+    const photoURLContentType = await imagePhotoURL.headers.get('content-type');
+    imagePhotoURLBase64 = `data:image/${photoURLContentType};base64,`+imagePhotoURLBuffer.toString('base64');
+    $('.profile-img').eq(index).css('background-image', 'url(' + imagePhotoURLBase64 + ')');
+    return;
+  }));
 
   // remove the 'not signed label' when signed view
   if(data[0].title.toUpperCase() === "SIGNED") {
@@ -169,14 +172,21 @@ module.exports = async (
 
   // not SVG
   if (contentType.indexOf("svg") <= -1) {
-    isLightImage = await isLightContrastImage({
-      x: imgW - (imgW / 4), // start x
-      y: 0, // start y
-      dx: imgW, // end x
-      dy: imgH, // end y
-      imageUrl 
+    // can be increased at the cost of performance
+    const imageArea = 5;
+    isLightImage = await isLightContrastImage({ 
+      imageBuffer,
+      x: 0,
+      y: 0,
+      dx: (imgW/imageArea) > 1 ? (imgW/imageArea) : 1,
+      dy: (imgH/imageArea) > 1 ? (imgH/imageArea) : 1,
     });
   }
+
+  // SVG - TODO 
+  // if (contentType.indexOf("svg") > -1) {
+  //   isLightImage = await isLightContrastImage({ imageBuffer: imageBuffer });
+  // }
 
   // Define if the colour theme for text is black or white.
   const colourTheme = isLightImage ? "black" : "white";
@@ -186,8 +196,8 @@ module.exports = async (
   $('.label, .not-signed').css("background-color", labelbackgroundCRBGA);
   $('.label, .autograph, .not-signed, .status, .stamp').css({ 'color': colourTheme });
   
-  // Allow labels to reach up to 90% of the width of the container
-  $('.label').css({ 'max-width': (imgW * 0.7) + "px" });
+  // Allow labels to reach up to 50% of the width of the container
+  $('.label').css({ 'max-width': (imgW * 0.5) + "px" });
 
   // Cheerio provides the changes within a html document format
   // to return the SVG we remove this and provide the SVG 
@@ -207,9 +217,12 @@ module.exports = async (
     output = output.replace(item, "");
   })
 
+  // Base64 output if parameter flag set to true
+  if(base64Encode) output = svg64(output);
+
   // console.log("Type: " + contentType + " Size W: " + imgW + " Size H: " + imgH);
   console.timeEnd("Application");
-
+  
   return output;
 
 }

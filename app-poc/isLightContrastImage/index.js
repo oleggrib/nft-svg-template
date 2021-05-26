@@ -8,7 +8,7 @@ const Jimp = require('jimp');
 
   USE:
   returns a boolean if the given image is light or dark. A use case
-  being to determine is white or black text should be overlayed onto the image
+  being to determine is white or black text should be overlayed onto the image. 
 
   interface: {
     imageUrl
@@ -20,7 +20,7 @@ const Jimp = require('jimp');
   which calculates the output.  
 
   At this time the area is fixed, but can be adjusted easily to
-  meet new requirements.
+  meet new requirements. This function best performs checking a small area of pixels.
 
 */
 
@@ -74,16 +74,12 @@ const detect = async ({
 }
 
 module.exports = async ({
+  imageBuffer,
   x,
   y,
   dx,
-  dy,
-  imageUrl
+  dy
 }) => {
-
-  // fetch given image
-  const responce = await fetch(imageUrl);
-  const imageBuffer = await responce.buffer();
 
   // required in format '#xxxxxx', #xxx not allowed
   const allowedTextColors = ['#ffffff', '#000000'];
@@ -91,10 +87,10 @@ module.exports = async ({
   // example output: '#ffffff', '#000000'
   const output = await detect({ 
       imageBuffer, 
-      x: 10, 
-      y: 10, 
-      dx: 200, 
-      dy: 30, 
+      x,
+      y,
+      dx,
+      dy,
       allowedTextColors
   });
   
