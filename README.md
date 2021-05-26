@@ -5,11 +5,9 @@ https://www.npmjs.com/package/html-to-image
 
 ## TODO's
 
-- base64 output
-- Switch out Cheerio to https://github.com/inikulin/parse5 
 - Error Handling
 - Check image colour SVG
-- Google Condensed Font - See if we can get this closer to the original design 
+- Switch out Cheerio to https://github.com/inikulin/parse5 
 - Unit Tests
 - Bench mark performance
 - Optimise code / increase performance
@@ -21,21 +19,7 @@ https://www.npmjs.com/package/html-to-image
 Application: 325ms (average from several tests)
 Application: 300ms (Without Google Font from several tests)
 Application: 90ms (get image URL - no processing)
-
-## TODO's DONE:
-
-- Layering, ensure SVG Images sit below content [DONE]
-- Add Ellipsis (when autograph will go out of bounds of the Remixed NFT) [DONE]
-- Pull down twitter profile image [DONE]
-- Animated SVG inside SVG Tests [DONE]
-- Render SVG's Readable on MAC / PC / WEB [DONE]
-- SVG - Get image Size (POC) [DONE]
-- Finalise template styles [DONE]
-- Connect with Hu (interface/integration) [DONE]
-- Template selection confirmed update to interface with team / update code [DONE] 
-- Scale Autograph % [DONE]
-- Embed Google fonts [DONE]
-- Add the logic to say '+ 4 more etc - more than 3 autographs' [DONE]
+Application: 300ms Scanning slightly larger area of bitmap
 
 ## Enhancement (however this is mostly not applicable where we collect the data before simulating the browser):
 

@@ -1,6 +1,9 @@
 const cheerio = require('cheerio');
 const isLightContrastImage = require('./isLightContrastImage');
 
+// TODO error handling util
+// const asyncHandle = require('./asyncHandle');
+
 // Enable for SVG to be converted to Base64
 const svg64 = require('svg64');
 const fetch = require('node-fetch');
@@ -46,7 +49,7 @@ module.exports = async (
   // get Content type
   const contentType = await imageUrlData.headers.get('content-type');
   // variable to store image in Base64 format
-  let imageBase64, imgH, imgW,imageBuffer, svgUrlData; 
+  let imageBase64, imgH, imgW, imageBuffer, svgUrlData; 
 
   // if SVG
   if (contentType.indexOf("svg") > -1) {
@@ -99,7 +102,9 @@ module.exports = async (
     // Apply Calculation
     $('.autograph-nft-wrapper').eq(0).css({ 'font-size': rootPixelSize + 'px' });
     // apply height and width: to autograph-nft-wrapper + autograph-nft-fo
-    $('.autograph-nft-wrapper, .autograph-nft-fo').eq(0).attr({ height: imgH, width: imgW });
+    $('.autograph-nft-wrapper').eq(0).attr({ height: imgH, width: imgW });
+    $('.autograph-nft-fo').eq(0).attr({ height: imgH, width: imgW });
+
   }
 
   // build date stamp string
@@ -117,6 +122,7 @@ module.exports = async (
 
   // Apply Labels
   let labelTemplates = '';
+
   // add labels
   data.map((label, index) => {
     if (index < 3) { // 3 is max ammount of autographs that can show on screen.
@@ -145,15 +151,14 @@ module.exports = async (
   $('.label-container').eq(0).html(`${labelTemplates}`);
 
   // Add photos
-  data.map(async (label, index) => {
-    if (index < 3) { // 3 is max ammount of autographs that can show on screen.
-      const imagePhotoURL = await fetch(data[index].photoURL);
-      const imagePhotoURLBuffer = await imagePhotoURL.buffer();
-      const photoURLContentType = await imagePhotoURL.headers.get('content-type');
-      imagePhotoURLBase64 = `data:image/${photoURLContentType};base64,`+imagePhotoURLBuffer.toString('base64');
-      $('.profile-img').eq(index).css('background-image', 'url(' + imagePhotoURLBase64 + ')');
-    }
-  });
+  await Promise.all(data.map(async (label, index)  => {
+    const imagePhotoURL = await fetch(data[index].photoURL);
+    const imagePhotoURLBuffer = await imagePhotoURL.buffer();
+    const photoURLContentType = await imagePhotoURL.headers.get('content-type');
+    imagePhotoURLBase64 = `data:image/${photoURLContentType};base64,`+imagePhotoURLBuffer.toString('base64');
+    $('.profile-img').eq(index).css('background-image', 'url(' + imagePhotoURLBase64 + ')');
+    return;
+  }));
 
   // remove the 'not signed label' when signed view
   if(data[0].title.toUpperCase() === "SIGNED") {
@@ -167,12 +172,21 @@ module.exports = async (
 
   // not SVG
   if (contentType.indexOf("svg") <= -1) {
-    isLightImage = await isLightContrastImage({ imageBuffer });
+    // can be increased at the cost of performance
+    const imageArea = 5;
+    isLightImage = await isLightContrastImage({ 
+      imageBuffer,
+      x: 0,
+      y: 0,
+      dx: (imgW/imageArea) > 1 ? (imgW/imageArea) : 1,
+      dy: (imgH/imageArea) > 1 ? (imgH/imageArea) : 1,
+    });
   }
-  // SVG - not working yet.
-  if (contentType.indexOf("svg") > -1) {
-    isLightImage = await isLightContrastImage({ imageBuffer: imageBuffer });
-  }
+
+  // SVG - TODO 
+  // if (contentType.indexOf("svg") > -1) {
+  //   isLightImage = await isLightContrastImage({ imageBuffer: imageBuffer });
+  // }
 
   // Define if the colour theme for text is black or white.
   const colourTheme = isLightImage ? "black" : "white";
@@ -182,8 +196,8 @@ module.exports = async (
   $('.label, .not-signed').css("background-color", labelbackgroundCRBGA);
   $('.label, .autograph, .not-signed, .status, .stamp').css({ 'color': colourTheme });
   
-  // Allow labels to reach up to 90% of the width of the container
-  $('.label').css({ 'max-width': (imgW * 0.7) + "px" });
+  // Allow labels to reach up to 50% of the width of the container
+  $('.label').css({ 'max-width': (imgW * 0.5) + "px" });
 
   // Cheerio provides the changes within a html document format
   // to return the SVG we remove this and provide the SVG 
@@ -205,7 +219,7 @@ module.exports = async (
 
   // Base64 output if parameter flag set to true
   if(base64Encode) output = svg64(output);
-  
+
   // console.log("Type: " + contentType + " Size W: " + imgW + " Size H: " + imgH);
   console.timeEnd("Application");
   

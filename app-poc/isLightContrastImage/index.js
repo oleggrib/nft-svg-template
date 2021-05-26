@@ -74,7 +74,11 @@ const detect = async ({
 }
 
 module.exports = async ({
-  imageBuffer
+  imageBuffer,
+  x,
+  y,
+  dx,
+  dy
 }) => {
 
   // required in format '#xxxxxx', #xxx not allowed
@@ -83,10 +87,10 @@ module.exports = async ({
   // example output: '#ffffff', '#000000'
   const output = await detect({ 
       imageBuffer, 
-      x: 0,
-      y: 0,
-      dx: 10,
-      dy: 10,
+      x,
+      y,
+      dx,
+      dy,
       allowedTextColors
   });
   
