@@ -1,8 +1,7 @@
 const cheerio = require('cheerio');
-const isLightContrastImage = require('./isLightContrastImage');
 
-// TODO error handling util
-// const asyncHandle = require('./asyncHandle');
+// lib to detect image contrast returning if image is light or dark
+const isLightContrastImage = require('./isLightContrastImage');
 
 // Enable for SVG to be converted to Base64
 const svg64 = require('svg64');
@@ -40,17 +39,19 @@ module.exports = async (
   base64Encode,
 ) => {
 
-  console.time("Application");
+  // console.time("Application");
+
+  let imageBase64, imgH, imgW, imageBuffer, svgUrlData; 
   
   // load SVG template
   const $ = cheerio.load(template);
+  
   // fetch the NFT Data 
   const imageUrlData = await fetch(imageUrl);
+  
   // get Content type
   const contentType = await imageUrlData.headers.get('content-type');
-  // variable to store image in Base64 format
-  let imageBase64, imgH, imgW, imageBuffer, svgUrlData; 
-
+  
   // if SVG
   if (contentType.indexOf("svg") > -1) {
 
@@ -61,12 +62,13 @@ module.exports = async (
     // base64 encode SVG
     imageBase64 = svg64(svgUrlData);
 
-    const svgViewBox = $("svg").attr('viewBox');
-    const svgWidth = $("svg").attr('width');
-    const svgHeight = $("svg").attr('height');
+    const svgEl = $("svg");
+    const svgViewBox = $(svgEl).attr('viewBox');
+    const svgWidth = $(svgEl).attr('width');
+    const svgHeight = $(svgEl).attr('height');
     let svgViewBoxData = svgViewBox ? $(svg).attr('viewBox').split(' ') : undefined;
   
-    if(svgViewBoxData){
+    if (svgViewBoxData){
       // apply height width of SVG from ViewBox values
       imgW = viewBoxData[2];
       imgH = viewBoxData[3];
@@ -93,17 +95,15 @@ module.exports = async (
   }
 
   // set the image height and width and apply scale of labelling to image
-  if(imgW && imgH) {
+  if (imgW && imgH) {
 
     // determine shortest in length (so we can apply the most suitable labelling).
     const shortestInLength = imgW < imgH ? imgW : imgH;
     // using REM calculate the template layout scale (design original based from a 400px width)
     const rootPixelSize = shortestInLength / 16 * 0.64;
-    // Apply Calculation
-    $('.autograph-nft-wrapper').eq(0).css({ 'font-size': rootPixelSize + 'px' });
-    // apply height and width: to autograph-nft-wrapper + autograph-nft-fo
-    $('.autograph-nft-wrapper').eq(0).attr({ height: imgH, width: imgW });
-    $('.autograph-nft-fo').eq(0).attr({ height: imgH, width: imgW });
+    // Apply Calculation (height / width)
+    $('.autograph-nft-wrapper').css({ 'font-size': rootPixelSize + 'px' }).attr({ height: imgH, width: imgW });
+    $('.autograph-nft-fo').attr({ height: imgH, width: imgW });
 
   }
 
@@ -150,25 +150,22 @@ module.exports = async (
   // add all labels
   $('.label-container').eq(0).html(`${labelTemplates}`);
 
-  // Add photos
+  // Add profile photos
   await Promise.all(data.map(async (label, index)  => {
     const imagePhotoURL = await fetch(data[index].photoURL);
     const imagePhotoURLBuffer = await imagePhotoURL.buffer();
     const photoURLContentType = await imagePhotoURL.headers.get('content-type');
     imagePhotoURLBase64 = `data:image/${photoURLContentType};base64,`+imagePhotoURLBuffer.toString('base64');
     $('.profile-img').eq(index).css('background-image', 'url(' + imagePhotoURLBase64 + ')');
-    return;
   }));
-
+  
   // remove the 'not signed label' when signed view
-  if(data[0].title.toUpperCase() === "SIGNED") {
+  if (data[0].title.toUpperCase() === "SIGNED") {
     $('.not-signed').remove();
-  }
+  };
 
   // integrate smarts here (Get colour)
-  let isLightImage = false;
-
-  // TODO create SVG version of isLightContrastImage()
+  let isLightImage = true;
 
   // not SVG
   if (contentType.indexOf("svg") <= -1) {
@@ -215,13 +212,13 @@ module.exports = async (
   // remove the outer html wrapper
   removeList.map((item) => {
     output = output.replace(item, "");
-  })
+  });
 
   // Base64 output if parameter flag set to true
-  if(base64Encode) output = svg64(output);
+  if (base64Encode) output = svg64(output);
 
   // console.log("Type: " + contentType + " Size W: " + imgW + " Size H: " + imgH);
-  console.timeEnd("Application");
+  // console.timeEnd("Application");
   
   return output;
 
