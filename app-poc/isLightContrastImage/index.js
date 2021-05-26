@@ -78,12 +78,8 @@ module.exports = async ({
   y,
   dx,
   dy,
-  imageUrl
+  imageBuffer
 }) => {
-
-  // fetch given image
-  const responce = await fetch(imageUrl);
-  const imageBuffer = await responce.buffer();
 
   // required in format '#xxxxxx', #xxx not allowed
   const allowedTextColors = ['#ffffff', '#000000'];
@@ -91,10 +87,10 @@ module.exports = async ({
   // example output: '#ffffff', '#000000'
   const output = await detect({ 
       imageBuffer, 
-      x: 10, 
-      y: 10, 
-      dx: 200, 
-      dy: 30, 
+      x: 0,
+      y: 0,
+      dx: 10,
+      dy: 10,
       allowedTextColors
   });
   

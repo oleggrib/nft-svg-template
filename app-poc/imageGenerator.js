@@ -46,13 +46,13 @@ module.exports = async (
   // get Content type
   const contentType = await imageUrlData.headers.get('content-type');
   // variable to store image in Base64 format
-  let imageBase64, imgH, imgW;
+  let imageBase64, imgH, imgW,imageBuffer, svgUrlData; 
 
   // if SVG
   if (contentType.indexOf("svg") > -1) {
-    
+
     // get SVG element from response
-    const svgUrlData = await imageUrlData.text();
+    svgUrlData = await imageUrlData.text();
     // [x, y, width, height]
 
     // base64 encode SVG
@@ -81,7 +81,7 @@ module.exports = async (
   // if other (PNG, JPG, Gif)
   if (contentType.indexOf("svg") <= -1) {
 
-    const imageBuffer = await imageUrlData.buffer();
+    imageBuffer = await imageUrlData.buffer();
     imageBase64 = `data:image/${contentType};base64,`+imageBuffer.toString('base64');
     const dimensions = sizeOf(imageBuffer);
     imgH = dimensions.height;
@@ -169,12 +169,23 @@ module.exports = async (
 
   // not SVG
   if (contentType.indexOf("svg") <= -1) {
+    const innerMargin = 2; // check pixels within the bounds
     isLightImage = await isLightContrastImage({
       x: imgW - (imgW / 4), // start x
       y: 0, // start y
-      dx: imgW, // end x
-      dy: imgH, // end y
-      imageUrl 
+      dx: imgW - innerMargin, // end x
+      dy: imgH - innerMargin, // end y
+      imageBuffer 
+    });
+  }
+  // SVG
+  if (contentType.indexOf("svg") > -1) {
+    isLightImage = await isLightContrastImage({
+      x: imgW - (imgW / 4), // start x
+      y: 0, // start y
+      dx: imgW -2, // end x
+      dy: imgH -2, // end y
+      imageBuffer: imageBuffer
     });
   }
 

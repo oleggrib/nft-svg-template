@@ -5,14 +5,12 @@ https://www.npmjs.com/package/html-to-image
 
 ## TODO's
 
-- Remix-able NFT's Flow e.g. When adding an already Remixed NFT [TODO/CONFIRM_IF_NEEDED]
-- Integration with web team [TODO]
-- Check image colour SVG [TODO]
-- [BUG] SVG sizes are not always found [TODO]
-- Google Condensed Font - See if we can get this closer to the original design [TODO]
-- Unit Tests
-- Webpack Build
+- base64 output
+- Switch out Cheerio to https://github.com/inikulin/parse5 
 - Error Handling
+- Check image colour SVG
+- Google Condensed Font - See if we can get this closer to the original design 
+- Unit Tests
 - Bench mark performance
 - Optimise code / increase performance
 
