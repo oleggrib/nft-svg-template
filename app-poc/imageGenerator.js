@@ -118,7 +118,7 @@ module.exports = async (
   // Apply Stamp
   $('.stamp').eq(0).html(`${data[0].mark}.${dateStamp}`);
   // Apply status
-  $('.status').eq(0).html(`${data[0].title}:`);
+  $('.status').eq(0).html(`${data[0].title}`);
 
   // Apply Labels
   let labelTemplates = '';
