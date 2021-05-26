@@ -9,8 +9,7 @@ https://www.npmjs.com/package/html-to-image
 - Check image colour SVG
 - Switch out Cheerio to https://github.com/inikulin/parse5 
 - Unit Tests
-- Bench mark performance
-- Optimise code / increase performance
+- Bench mark performance / Optimise code + increase performance
 
 ### Performance Test
 
