@@ -34,7 +34,7 @@ const template = require("./htmlTemplates/labelled_autograph_template");
 module.exports = async (
   imageUrl,
   data,
-  base64Encode=true,
+  base64Encode,
 ) => {
 
   console.time("Application");
@@ -99,9 +99,7 @@ module.exports = async (
     // Apply Calculation
     $('.autograph-nft-wrapper').eq(0).css({ 'font-size': rootPixelSize + 'px' });
     // apply height and width: to autograph-nft-wrapper + autograph-nft-fo
-    $('.autograph-nft-wrapper').eq(0).attr({ height: imgH, width: imgW });
-    $('.autograph-nft-fo').eq(0).attr({ height: imgH, width: imgW });
-
+    $('.autograph-nft-wrapper, .autograph-nft-fo').eq(0).attr({ height: imgH, width: imgW });
   }
 
   // build date stamp string
@@ -169,24 +167,11 @@ module.exports = async (
 
   // not SVG
   if (contentType.indexOf("svg") <= -1) {
-    const innerMargin = 2; // check pixels within the bounds
-    isLightImage = await isLightContrastImage({
-      x: imgW - (imgW / 4), // start x
-      y: 0, // start y
-      dx: imgW - innerMargin, // end x
-      dy: imgH - innerMargin, // end y
-      imageBuffer 
-    });
+    isLightImage = await isLightContrastImage({ imageBuffer });
   }
-  // SVG
+  // SVG - not working yet.
   if (contentType.indexOf("svg") > -1) {
-    isLightImage = await isLightContrastImage({
-      x: imgW - (imgW / 4), // start x
-      y: 0, // start y
-      dx: imgW -2, // end x
-      dy: imgH -2, // end y
-      imageBuffer: imageBuffer
-    });
+    isLightImage = await isLightContrastImage({ imageBuffer: imageBuffer });
   }
 
   // Define if the colour theme for text is black or white.
@@ -218,9 +203,12 @@ module.exports = async (
     output = output.replace(item, "");
   })
 
+  // Base64 output if parameter flag set to true
+  if(base64Encode) output = svg64(output);
+  
   // console.log("Type: " + contentType + " Size W: " + imgW + " Size H: " + imgH);
   console.timeEnd("Application");
-
+  
   return output;
 
 }
