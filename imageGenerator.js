@@ -55,9 +55,6 @@ module.exports = async (
   // get Content type
   const contentType = await imageUrlData.headers.get('content-type');
 
-  // 
-  if(!contentType) throw 'Could not define content type';
-  
   // if SVG
   if (contentType.indexOf("svg") > -1) {
 
@@ -91,8 +88,8 @@ module.exports = async (
 
   // if other (PNG, JPG, Gif)
   if (contentType.indexOf("svg") <= -1) {
-
     imageBuffer = await imageUrlData.buffer();
+    // console.log(imageBuffer);
     imageBase64 = `data:image/${contentType};base64,`+imageBuffer.toString('base64');
     const dimensions = sizeOf(imageBuffer);
     imgH = dimensions.height;
@@ -186,10 +183,32 @@ module.exports = async (
     });
   }
 
-  // SVG - TODO 
-  // if (contentType.indexOf("svg") > -1) {
-  //   isLightImage = await isLightContrastImage({ imageBuffer: imageBuffer });
-  // }
+  if (contentType.indexOf("svg") > -1) {
+    
+    // can be increased at the cost of performance
+    const imageArea = 5;
+
+    const _removeList = [
+      "<html><head></head><body>",
+      "</body></html>"
+    ];
+  
+    // output is SVG wrapped in html
+    let _svgOutput = $.html();
+  
+    // remove the outer html wrapper
+    _removeList.map((item) => {
+      _svgOutput = _svgOutput.replace(item, "");
+    });
+    let test_ = await convert(_svgOutput);
+    isLightImage = await isLightContrastImage({ 
+      imageBuffer: test_,
+      x: 0,
+      y: 0,
+      dx: (imgW/imageArea) > 1 ? (imgW/imageArea) : 1,
+      dy: (imgH/imageArea) > 1 ? (imgH/imageArea) : 1
+    });
+  }
 
   // Define if the colour theme for text is black or white.
   const colourTheme = isLightImage ? "black" : "white";

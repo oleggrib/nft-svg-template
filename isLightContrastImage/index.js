@@ -66,7 +66,6 @@ const detect = async ({
           })
       });
       result.sort((item1,item2)=>item2.diff - item1.diff );
-
   } catch (e) {
       console.log('Something went wrong:', e);
   }
