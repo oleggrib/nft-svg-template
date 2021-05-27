@@ -9,7 +9,7 @@ const fetch = require('node-fetch');
 const sizeOf = require('image-size');
 
 // SVG Template
-const template = require("./htmlTemplates/labelled_autograph_template");
+const template = require("./htmlTemplates/labelled_autograph_svg_template");
 
 /*
   FUNCTION:
@@ -67,8 +67,8 @@ module.exports = async (
 
     const svgEl = $("svg");
     const svgViewBox = $(svgEl).attr('viewBox');
-    const svgWidth = $(svgEl).attr('width');
-    const svgHeight = $(svgEl).attr('height');
+    const svgWidth = $(svgEl).attr('width').replace(/[^0-9]+/g, "");
+    const svgHeight = $(svgEl).attr('height').replace(/[^0-9]+/g, "");
     let svgViewBoxData = svgViewBox ? $(svg).attr('viewBox').split(' ') : undefined;
   
     if (svgViewBoxData){
