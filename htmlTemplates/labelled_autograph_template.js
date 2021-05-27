@@ -116,8 +116,6 @@ module.exports = `
     .autograph-nft .autograph {
       position: relative; top: -0.05rem;
       font-family: 'Barlow'; font-stretch: condensed; text-transform: uppercase; padding-bottom: 0.05rem;
-      overflow: hidden;
-      text-overflow: ellipsis; 
     }
     .autograph-nft .profile-img {
       margin-right: 0.15rem; min-width: 1.3rem; min-height: 1.3rem; border-radius: 1.3rem;
@@ -136,7 +134,6 @@ module.exports = `
       align-items: flex-end;
     } 
     .autograph-nft .label { 
-      max-width: 50%;   
       flex-basis: 100%;
       width: fit-content;
       font-family: 'Barlow'; 

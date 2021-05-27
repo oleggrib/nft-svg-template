@@ -5,9 +5,12 @@ https://www.npmjs.com/package/html-to-image
 
 ## TODO's
 
+- Correct image re-sizing calculation (so it looks the same regardless of scaling)
+- "get-image-colors": "^4.0.0" Security warning / review / solution a fix
 - Error Handling
+- Security checks e.g. checking types / Security image libs
 - Check image colour SVG
-- Switch out Cheerio to https://github.com/inikulin/parse5 
+- Switch out Cheerio to https://github.com/inikulin/parse5 (Cheerio is being installed by other deps / this task may not be required unless replacing other deps etc)
 - Unit Tests
 - Bench mark performance / Optimise code + increase performance
 

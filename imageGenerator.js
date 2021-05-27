@@ -51,6 +51,9 @@ module.exports = async (
   
   // get Content type
   const contentType = await imageUrlData.headers.get('content-type');
+
+  // 
+  if(!contentType) throw 'Could not define content type';
   
   // if SVG
   if (contentType.indexOf("svg") > -1) {
@@ -193,9 +196,6 @@ module.exports = async (
   $('.label, .not-signed').css("background-color", labelbackgroundCRBGA);
   $('.label, .autograph, .not-signed, .status, .stamp').css({ 'color': colourTheme });
   
-  // Allow labels to reach up to 50% of the width of the container
-  $('.label').css({ 'max-width': (imgW * 0.5) + "px" });
-
   // Cheerio provides the changes within a html document format
   // to return the SVG we remove this and provide the SVG 
   // data only
