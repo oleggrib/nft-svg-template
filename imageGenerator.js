@@ -3,6 +3,9 @@ const cheerio = require('cheerio');
 // lib to detect image contrast returning if image is light or dark
 const isLightContrastImage = require('./isLightContrastImage');
 
+// lib to convert svg's to png
+const { convert } = require('convert-svg-to-png');
+
 // Enable for SVG to be converted to Base64
 const svg64 = require('svg64');
 const fetch = require('node-fetch');
@@ -36,7 +39,7 @@ const template = require("./htmlTemplates/labelled_autograph_template");
 module.exports = async (
   imageUrl,
   data,
-  base64Encode,
+  base64Encode
 ) => {
 
   // console.time("Application");
@@ -67,8 +70,8 @@ module.exports = async (
 
     const svgEl = $("svg");
     const svgViewBox = $(svgEl).attr('viewBox');
-    const svgWidth = $(svgEl).attr('width');
-    const svgHeight = $(svgEl).attr('height');
+    const svgWidth = $(svgEl).attr('width').replace(/[^0-9]+/g, "");
+    const svgHeight = $(svgEl).attr('height').replace(/[^0-9]+/g, "");
     let svgViewBoxData = svgViewBox ? $(svg).attr('viewBox').split(' ') : undefined;
   
     if (svgViewBoxData){
@@ -207,19 +210,23 @@ module.exports = async (
   ];
 
   // output is SVG wrapped in html
-  let output = $.html();
+  let svgOutput = $.html();
 
   // remove the outer html wrapper
   removeList.map((item) => {
-    output = output.replace(item, "");
+    svgOutput = svgOutput.replace(item, "");
   });
 
   // Base64 output if parameter flag set to true
-  if (base64Encode) output = svg64(output);
+  if (base64Encode) svgOutput = svg64(svgOutput);
 
   // console.log("Type: " + contentType + " Size W: " + imgW + " Size H: " + imgH);
   // console.timeEnd("Application");
-  
-  return output;
 
+  const pngOutput = await convert(svgOutput);
+
+  return {
+    svg: svgOutput,
+    png: pngOutput
+  } 
 }

@@ -3,6 +3,7 @@ const imageGenerator = require("./imageGenerator");
 
 // imageUrl
 // data: [
+// {
 //    title: string; (Title of NFT)
 //    templateType: "SIGNED" or "REQUESTING"
 //    photoURL: string; (Photo of Twitter User)
@@ -24,8 +25,8 @@ imageGenerator(
   // "https://upload.wikimedia.org/wikipedia/commons/4/4f/SVG_Logo.svg",
   // "https://i.pinimg.com/originals/a9/e5/06/a9e506364ae6b6892e6a126a2f021206.gif",
   // "https://polkadot.network/content/images/2020/06/Polkadot_OG.png",
-  "https://storage.opensea.io/files/49a2c73a565c7847c4d2af9a2419990d.svg",
-  // "https://storage.opensea.io/files/0fbeacdb0bf089800109f3b1d0401c6b.svg",
+  // "https://storage.opensea.io/files/49a2c73a565c7847c4d2af9a2419990d.svg",
+  "https://storage.opensea.io/files/0fbeacdb0bf089800109f3b1d0401c6b.svg",
   [
     {
       title: "Requesting",
@@ -57,9 +58,15 @@ imageGenerator(
     },
   ],
   false,
+  "SVG"
 ).then((res) => {
-  fs.writeFile('remixNFT.svg', res, function (err) {
-    if (err) return console.log(err);
-  });
-  // console.log(res);
+
+    fs.writeFile('remixNFT.png', res.png, function (err) {
+      if (err) return console.log(err);
+    });
+
+    fs.writeFile('remixNFT.svg', res.svg, function (err) {
+      if (err) return console.log(err);
+    });
+
 });
