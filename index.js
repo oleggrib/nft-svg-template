@@ -58,8 +58,8 @@ imageGenerator(
   ],
   false,
 ).then((res) => {
-  fs.writeFile('remixNFT.svg', res, function (err) {
-    if (err) return console.log(err);
-  });
+  // fs.writeFile('remixNFT.svg', res, function (err) {
+  //   if (err) return console.log(err);
+  // });
   // console.log(res);
 });
