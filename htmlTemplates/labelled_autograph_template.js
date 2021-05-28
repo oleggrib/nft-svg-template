@@ -1,5 +1,5 @@
 module.exports = `
-<svg class="autograph-nft-wrapper" height="1000px" width="1000px" xmlns="http://www.w3.org/2000/svg">
+<svg class="autograph-nft-wrapper" preserveAspectRatio="none" height="1000px" width="1000px" xmlns="http://www.w3.org/2000/svg">
   <style>
     /* vietnamese */
     @font-face {

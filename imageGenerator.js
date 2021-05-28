@@ -79,10 +79,12 @@ module.exports = async (
       // apply height width of SVG from W/H values
       imgW = svgWidth;
       imgH = svgHeight;
+      $(svg).attr('viewBox') = `[0, 0, ${imgW}, ${imgH}]`;
     } else {
       // fallback if an image size cannot be found
       imgW = 500;
       imgH = 500;
+      $(svg).attr('viewBox') = `[0, 0, 500, 500]`;
     }
   }
 
