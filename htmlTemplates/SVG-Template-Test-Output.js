@@ -10,13 +10,21 @@ module.exports = `
                 <tspan x="40" y="75">Ongoing Offer!</tspan>
             </text>
         </g>
-        <g id="timestamp">
+        <svg id="timestamp" x="800" y="20">
             <text style="font-family:'Avenir-Book', 'Avenir'; font-size: 21px; fill:white; transform-box: fill-box;
             transform-origin: 0;
-            transform: rotate(90deg);">
-                <tspan x="960" y="40">0849.25MAY2021</tspan>
+            transform: rotate(90deg)">
+                0849.25MAY2021
             </text>
-        </g>
+        </svg>
+        <svg id="labelcontainer" x="600" y="400">
+            <g id="label">
+                <rect x="0" y="0" width="160" height="60" style="fill:rgb(255,255,255)" fill-opacity="0.5"></rect>
+                <text style="font-family:'Avenir-Book', 'Avenir'; font-size: 21px; fill:white;">
+                    <tspan x="0" y="30">@Vitak.434564454544563</tspan>
+                </text>
+            </g>
+        </svg>
     </g>
 </svg>
 `;
