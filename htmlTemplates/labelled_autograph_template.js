@@ -1,6 +1,23 @@
 module.exports = `
-<svg class="autograph-nft-wrapper" preserveAspectRatio="none" height="1000px" width="1000px" xmlns="http://www.w3.org/2000/svg">
+<svg class="autograph-nft-wrapper" preserveAspectRatio="none" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg">
   <style>
+
+  object {
+    width: 100%;
+    display: block;
+    height: auto;
+    position: relative;
+    padding-top: 100%;
+  }
+  
+  svg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
     /* vietnamese */
     @font-face {
     font-family: 'Barlow';

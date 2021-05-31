@@ -60,20 +60,9 @@ imageGenerator(
 ).then((res) => {
   fs.writeFile('remixNFT.svg', res, function (err) {
     if (err) return console.log(err);
+    console.log('success');
   });
   // console.log(res);
 });
 
-
-
-
-const myFunction = async () => {
-  const account = await web3.eth.getCoinbase();
-
-  if (!account) {
-
-  }
-
-  document.getElementById("addr").value = account; //<-- this works for AW
-}
 
