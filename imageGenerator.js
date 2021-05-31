@@ -53,13 +53,9 @@ module.exports = async (
   // get Content type
   const contentType = await imageUrlData.headers.get('content-type');
 
-  $('#nick-test').html('nkjfnnfjenfjkenjkfrjnkfrnjnjkjkfejkn erfreferf re f e fer efrfreferf');
-  // console.log($('#nick-test').html("shit"));
-
-  // // 
   // if(!contentType) throw 'Could not define content type';
   
-  // // if SVG
+  // if SVG
   // if (contentType.indexOf("svg") > -1) {
 
   //   // get SVG element from response
@@ -92,30 +88,59 @@ module.exports = async (
   //   }
   // }
 
-  // // if other (PNG, JPG, Gif)
-  // if (contentType.indexOf("svg") <= -1) {
+  // if other (PNG, JPG, Gif)
+  if (contentType.indexOf("svg") <= -1) {
 
-  //   imageBuffer = await imageUrlData.buffer();
-  //   imageBase64 = `data:image/${contentType};base64,`+imageBuffer.toString('base64');
-  //   const dimensions = sizeOf(imageBuffer);
-  //   imgH = dimensions.height;
-  //   imgW = dimensions.width;
+    imageBuffer = await imageUrlData.buffer();
+    imageBase64 = `data:image/${contentType};base64,`+imageBuffer.toString('base64');
+    const dimensions = sizeOf(imageBuffer);
+    imgH = dimensions.height;
+    imgW = dimensions.width;
 
-  // }
+  }
 
-  // // set the image height and width and apply scale of labelling to image
-  // if (imgW && imgH) {
+  // set the image height and width and apply scale of labelling to image
+  if (imgW && imgH) {
 
-  //   // determine shortest in length (so we can apply the most suitable labelling).
-  //   const shortestInLength = imgW < imgH ? imgW : imgH;
-  //   // using REM calculate the template layout scale (design original based from a 400px width)
-  //   const rootPixelSize = shortestInLength / 16 * 0.64;
-  //   // Apply Calculation (height / width)
-  //   // $('.autograph-nft-wrapper').css({ 'font-size': rootPixelSize + 'px' }).attr({ height: imgH, width: imgW });
-  //   $('.autograph-nft-wrapper').css({ 'font-size': rootPixelSize + 'px' });
-  //   $('.autograph-nft-fo').attr({ height: imgH, width: imgW });
+    // determine shortest in length (so we can apply the most suitable labelling).
+    const shortestInLength = imgW < imgH ? imgW : imgH;
+    // using REM calculate the template layout scale (design original based from a 400px width)
+    const rootPixelSize = shortestInLength / 16 * 0.64;
+    // Apply Calculation (height / width)
+    // $('.autograph-nft-wrapper').css({ 'font-size': rootPixelSize + 'px' }).attr({ height: imgH, width: imgW });
 
-  // }
+    // $('.autograph-nft-wrapper').css({ 'font-size': rootPixelSize + 'px' });
+    $('.autograph-nft-wrapper').css({ height: imgH, width: imgW });
+    $('.autograph-nft-wrapper').attr({ 'viewBox': `0 0 ${imgW} ${imgH}` });
+
+    // common margin 
+    const svgMargin = rootPixelSize * 3;
+
+    // FIX:
+    // autograph-nft-wrapper
+
+    // Not Signed Text
+    $('.autograph-nft-not-signed text tspan').eq(0).attr({ 
+      "x": rootPixelSize * 1.8, 
+      "y": rootPixelSize * 3, 
+      "font-size": rootPixelSize * 1.6 
+    });
+    $('.autograph-nft-not-signed text tspan').eq(1).attr({ 
+      "x": rootPixelSize * 1.8, 
+      "y": rootPixelSize * 4.6, 
+      "font-size": rootPixelSize * 1.6 
+    });
+    // Not Signed Background
+    $('.autograph-nft-not-signed rect').attr({ 
+      "x": rootPixelSize * 1.5,
+      "y": rootPixelSize * 1.5,
+      "width": svgMargin * 3.7, 
+      "height": svgMargin * 1.2 
+    });
+
+    $('.timestamp text').attr({ "x": -rootPixelSize*2, "y": - (imgW - (svgMargin)), "font-size": rootPixelSize * 1 });
+
+  }
 
   // // build date stamp string
   // var d = new Date();
@@ -123,8 +148,8 @@ module.exports = async (
   // var months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
   // const dateStamp = `${d.getDate()}${months[n]}${d.getFullYear()}`;
   
-  // // Apply NFT Background colour
-  // $('.autograph-nft').eq(0).css('background-image', 'url(' + imageBase64 + ')');
+  // Apply NFT Background colour
+  $('.nft').eq(0).attr('href', imageBase64);
   // // Apply Stamp
   // $('.stamp').eq(0).html(`${data[0].mark}.${dateStamp}`);
   // // Apply status
