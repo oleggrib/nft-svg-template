@@ -137,8 +137,8 @@ module.exports = async (
       "width": svgMargin * 3.7, 
       "height": svgMargin * 1.2 
     });
-
-    $('.timestamp text').attr({ "x": -rootPixelSize*2, "y": - (imgW - (svgMargin)), "font-size": rootPixelSize * 1 });
+    // Timestamp positioning
+    $('.timestamp text').attr({ "x": rootPixelSize * 1.5, "y": - (imgW - (rootPixelSize * 2)), "font-size": rootPixelSize * 1 });
 
   }
 

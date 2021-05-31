@@ -126,8 +126,8 @@ svg {
                 <tspan x="29.736" y="75.99199999999999" font-size="26.432000000000002">Ongoing Offer!</tspan>
             </text>
         </g>
-        <svg class="timestamp" x="0" y="0" xmlns="http://www.w3.org/2000/svg" style="fill: white; font-family: 'Source Code Pro'">
-            <text transform="translate(10, 60) rotate(90)" x="-33.04" y="-500.44" font-size="16.52">3420434204.20MAY2096</text>
+        <svg class="timestamp" xmlns="http://www.w3.org/2000/svg" style="fill: white; font-family: 'Source Code Pro'">
+            <text transform="rotate(90)" x="24.78" y="-516.96" font-size="16.52">3420434204.WIPEOUT2097</text>
         </svg>
         <svg class="labelcontainer" x="600" y="400">
             <g class="label">
