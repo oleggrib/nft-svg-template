@@ -3,6 +3,9 @@ const cheerio = require('cheerio');
 // lib to detect image contrast returning if image is light or dark
 const isLightContrastImage = require('./isLightContrastImage');
 
+// Reads the Barlow Font widths (needed to correctly calculate width of labels)
+const googleFontData = require('./googleFontData');
+
 // Enable for SVG to be converted to Base64
 const svg64 = require('svg64');
 const fetch = require('node-fetch');
@@ -99,25 +102,21 @@ module.exports = async (
 
   }
 
+  let svgMargin, rootPixelSize;
+
   // set the image height and width and apply scale of labelling to image
   if (imgW && imgH) {
 
     // determine shortest in length (so we can apply the most suitable labelling).
     const shortestInLength = imgW < imgH ? imgW : imgH;
-    // using REM calculate the template layout scale (design original based from a 400px width)
-    const rootPixelSize = shortestInLength / 16 * 0.64;
+    // scale baseline of autograph / timestamp data
+    rootPixelSize = shortestInLength / 16 * 0.64;
     // Apply Calculation (height / width)
-    // $('.autograph-nft-wrapper').css({ 'font-size': rootPixelSize + 'px' }).attr({ height: imgH, width: imgW });
-
-    // $('.autograph-nft-wrapper').css({ 'font-size': rootPixelSize + 'px' });
     $('.autograph-nft-wrapper').css({ height: imgH, width: imgW });
     $('.autograph-nft-wrapper').attr({ 'viewBox': `0 0 ${imgW} ${imgH}` });
 
     // common margin 
-    const svgMargin = rootPixelSize * 3;
-
-    // FIX:
-    // autograph-nft-wrapper
+    svgMargin = rootPixelSize * 3;
 
     // Not Signed Text
     $('.autograph-nft-not-signed text tspan').eq(0).attr({ 
@@ -139,38 +138,51 @@ module.exports = async (
     });
     // Timestamp positioning
     $('.timestamp text').attr({ "x": rootPixelSize * 1.5, "y": - (imgW - (rootPixelSize * 2)), "font-size": rootPixelSize * 1 });
-
   }
 
-  // // build date stamp string
-  // var d = new Date();
-  // var n = d.getMonth();
-  // var months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
-  // const dateStamp = `${d.getDate()}${months[n]}${d.getFullYear()}`;
+  // build date stamp string
+  var d = new Date();
+  var n = d.getMonth();
+  var months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
+  const dateStamp = `${d.getDate()}${months[n]}${d.getFullYear()}`;
   
   // Apply NFT Background colour
   $('.nft').eq(0).attr('href', imageBase64);
-  // // Apply Stamp
-  // $('.stamp').eq(0).html(`${data[0].mark}.${dateStamp}`);
-  // // Apply status
+  // Apply Stamp
+  $('.timestamp text').text(`${data[0].mark}.${dateStamp}`);
+  // Apply status
   // $('.status').eq(0).html(`${data[0].title}`);
 
-  // // Apply Labels
-  // let labelTemplates = '';
+  // Apply Labels
+  let labelTemplates = '';
+  
+  // add labels
+  data.map((label, index) => {
+    if (index < 3) { // 3 is max ammount of autographs that can show on screen.
+      let textWidth = 0;      
+      label.name.match(/./g).concat(['.']).concat(label.twitterId.match(/./g)).map(char => {
+        const val = googleFontData[char];
+        // if(!val) textWidth += 18; // default if char not found e.g. Special Char.
+        // font size is 16px.
+        // but we want to use 21px etc.
+        textWidth += Math.round(googleFontData[char]); // initial font size
+      });
 
-  // // add labels
-  // data.map((label, index) => {
-  //   if (index < 3) { // 3 is max ammount of autographs that can show on screen.
-  //     labelTemplates += `
-  //       <div class="label">
-  //         <div class="profile-img"></div>
-  //         <div class="autograph">
-  //           ${label.name}.${label.twitterId}
-  //         </div>
-  //       </div>
-  //     `;
-  //   }
-  // });
+      console.log(textWidth);
+
+      labelTemplates += `
+        <svg class="label" xmlns="http://www.w3.org/2000/svg" x="0" y="${imgH - svgMargin * 1.2}">
+            <rect x="0" y="0" width="${textWidth}" height="42" style="fill:rgb(255,255,255)" fill-opacity="0.5"></rect>
+            <text style="font-family: 'Barlow'; fill:white;" font-size="${Math.round(rootPixelSize)}">
+                <tspan x="0" y="30">${label.name}.${label.twitterId}</tspan>
+            </text>
+        </svg>
+      `;
+    }
+
+    // 323 is what we want from Text Width.
+    // 
+  });
   
   // // when there are too many autographs to display, add the length of the additional.
   // if (data.length > 3) { 
@@ -183,7 +195,7 @@ module.exports = async (
   // };
   
   // // add all labels
-  // $('.label-container').eq(0).html(`${labelTemplates}`);
+  $('.label-container').eq(0).append(`${labelTemplates}`);
 
   // // Add profile photos
   // await Promise.all(data.map(async (label, index)  => {

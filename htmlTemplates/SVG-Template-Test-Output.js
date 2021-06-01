@@ -131,14 +131,7 @@ svg {
         <svg class="timestamp" xmlns="http://www.w3.org/2000/svg" style="fill: white; font-family: 'Source Code Pro'">
             <text transform="rotate(90)">3420434204.WIPEOUT2097</text>
         </svg>
-        <svg class="labelcontainer" x="600" y="400">
-            <g class="label">
-                <rect x="0" y="0" width="160" height="60" style="fill:rgb(255,255,255)" fill-opacity="0.5"></rect>
-                <text style="font-family:'Avenir-Book', 'Avenir'; font-size: 21px; fill:white;">
-                    <tspan x="0" y="30">@Vitak.434564454544563</tspan>
-                </text>
-            </g>
-        </svg>
+        <g class="label-container"></g>
     </g>
 </svg>
 `;
