@@ -41,7 +41,7 @@ module.exports = async (
   imageUrl,
   data,
   base64Encode,
-  format="SVG"
+  format="svg"
 ) => {
 
   // console.time("Application");

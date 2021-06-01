@@ -11,10 +11,11 @@ const imageGenerator = require("./imageGenerator");
 //    mark: string; (ID number)
 // }
 // ],
-// base64Encode
+// base64Encode,
+// format
 
-// const TYPE = "PNG";
-const TYPE = "SVG";
+// const TYPE = "png";
+const TYPE = "svg";
 
 imageGenerator(
   // "https://media-cdn.tripadvisor.com/media/photo-s/1a/dd/6a/f0/paradise-taveuni.jpg",
