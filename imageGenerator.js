@@ -157,23 +157,26 @@ module.exports = async (
   let labelTemplates = '';
   
   // add labels
+  let incrementVal;
   data.map((label, index) => {
     if (index < 3) { // 3 is max ammount of autographs that can show on screen.
-      let textWidth = 0;      
+      let textWidth = 0; 
       label.name.match(/./g).concat(['.']).concat(label.twitterId.match(/./g)).map(char => {
         const val = googleFontData[char];
-        // if(!val) textWidth += 18; // default if char not found e.g. Special Char.
-        // font size is 16px.
-        // but we want to use 21px etc.
-        textWidth += Math.round(googleFontData[char] * 2.1); // initial font size
+        // default if char not found e.g. Special Char (fall back)
+        // Applies the last disovered char or applies the font size.
+        if(!val) textWidth += incrementVal ? incrementVal : 21;
+        else {
+          // Calulate and increment the width.
+          incrementVal = Math.round(googleFontData[char] * (rootPixelSize * 1.3/10));  
+          textWidth += incrementVal;
+        }
       });
 
-      console.log(textWidth);
-
       labelTemplates += `
-        <svg class="label" xmlns="http://www.w3.org/2000/svg" x="0" y="${imgH - svgMargin * 1.2}">
+        <svg class="label" xmlns="http://www.w3.org/2000/svg" x="${imgW - textWidth}" y="${imgH - svgMargin * 1.2}">
             <rect x="0" y="0" width="${textWidth}" height="42" style="fill:rgb(255,255,255)" fill-opacity="0.5"></rect>
-            <text style="font-family: 'Barlow'; fill:white;" font-size="21">
+            <text style="font-family: 'Barlow'; fill:white;" font-size="${Math.round(rootPixelSize * 1.3)}">
                 <tspan x="0" y="30">${label.name}.${label.twitterId}</tspan>
             </text>
         </svg>

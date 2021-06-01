@@ -1,3 +1,6 @@
+// This data represents the font size of each char inside
+// the Google Font Barlow.
+
 module.exports = {
     "0": 5.649993896484375,
     "1": 3.5,

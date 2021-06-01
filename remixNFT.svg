@@ -130,10 +130,10 @@ svg {
             <text transform="rotate(90)" x="24.78" y="-516.96" font-size="16.52">17654321.1JUN2021</text>
         </svg>
         <g class="label-container">
-        <svg class="label" xmlns="http://www.w3.org/2000/svg" x="0" y="353.528">
-            <rect x="0" y="0" width="326" height="42" style="fill:rgb(255,255,255)" fill-opacity="0.5"></rect>
+        <svg class="label" xmlns="http://www.w3.org/2000/svg" x="209" y="353.528">
+            <rect x="0" y="0" width="341" height="42" style="fill:rgb(255,255,255)" fill-opacity="0.5"></rect>
             <text style="font-family: 'Barlow'; fill:white;" font-size="21">
-                <tspan x="0" y="30">@Beeple.9383550009959004216561</tspan>
+                <tspan x="0" y="30">@Beeple.9383550009%959004216561</tspan>
             </text>
         </svg>
       </g>
