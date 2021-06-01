@@ -165,7 +165,7 @@ module.exports = async (
         // if(!val) textWidth += 18; // default if char not found e.g. Special Char.
         // font size is 16px.
         // but we want to use 21px etc.
-        textWidth += Math.round(googleFontData[char]); // initial font size
+        textWidth += Math.round(googleFontData[char] * 2.1); // initial font size
       });
 
       console.log(textWidth);
@@ -173,7 +173,7 @@ module.exports = async (
       labelTemplates += `
         <svg class="label" xmlns="http://www.w3.org/2000/svg" x="0" y="${imgH - svgMargin * 1.2}">
             <rect x="0" y="0" width="${textWidth}" height="42" style="fill:rgb(255,255,255)" fill-opacity="0.5"></rect>
-            <text style="font-family: 'Barlow'; fill:white;" font-size="${Math.round(rootPixelSize)}">
+            <text style="font-family: 'Barlow'; fill:white;" font-size="21">
                 <tspan x="0" y="30">${label.name}.${label.twitterId}</tspan>
             </text>
         </svg>
