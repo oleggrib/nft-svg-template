@@ -33,7 +33,7 @@ const template = require("./htmlTemplates/labelled_autograph_template");
     }
     ],
     base64Encode,
-    format ('SVG', 'PNG')
+    format ('svg' or 'png')
   }
 */
 
@@ -211,10 +211,10 @@ module.exports = async (
     output = output.replace(item, "");
   });
 
-  // Base64 SVG output if parameter flag set to true
+  // Base64 output if parameter flag set to true
   if (base64Encode && format.toUpperCase() === 'SVG') output = svg64(output);
 
-  // define image data return type
+  // png as output
   if (format.toUpperCase() === 'PNG'){
     const pngOutput = await convert(output);
     output = pngOutput;
