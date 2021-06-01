@@ -8,6 +8,9 @@ const svg64 = require('svg64');
 const fetch = require('node-fetch');
 const sizeOf = require('image-size');
 
+// SVG to PNG
+const { convert } = require('convert-svg-to-png');
+
 // SVG Template
 const template = require("./htmlTemplates/labelled_autograph_template");
 
@@ -26,10 +29,11 @@ const template = require("./htmlTemplates/labelled_autograph_template");
       photoURL: string; (Photo of Twitter User)
       name: string; (Name of Twitter User)
       twitterId: string; (Handle)
-      mark: string; (ID number)
+      mark: string; (Like: 1507.27FEB2021)
     }
     ],
-    base64Encode
+    base64Encode,
+    format ('SVG', 'PNG')
   }
 */
 
@@ -37,6 +41,7 @@ module.exports = async (
   imageUrl,
   data,
   base64Encode,
+  format="SVG"
 ) => {
 
   // console.time("Application");
@@ -51,9 +56,6 @@ module.exports = async (
   
   // get Content type
   const contentType = await imageUrlData.headers.get('content-type');
-
-  // 
-  if(!contentType) throw 'Could not define content type';
   
   // if SVG
   if (contentType.indexOf("svg") > -1) {
@@ -99,7 +101,6 @@ module.exports = async (
 
   // set the image height and width and apply scale of labelling to image
   if (imgW && imgH) {
-
     // determine shortest in length (so we can apply the most suitable labelling).
     const shortestInLength = imgW < imgH ? imgW : imgH;
     // using REM calculate the template layout scale (design original based from a 400px width)
@@ -107,19 +108,12 @@ module.exports = async (
     // Apply Calculation (height / width)
     $('.autograph-nft-wrapper').css({ 'font-size': rootPixelSize + 'px' }).attr({ height: imgH, width: imgW });
     $('.autograph-nft-fo').attr({ height: imgH, width: imgW });
-
   }
 
-  // build date stamp string
-  var d = new Date();
-  var n = d.getMonth();
-  var months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
-  const dateStamp = `${d.getDate()}${months[n]}${d.getFullYear()}`;
-  
   // Apply NFT Background colour
   $('.autograph-nft').eq(0).css('background-image', 'url(' + imageBase64 + ')');
   // Apply Stamp
-  $('.stamp').eq(0).html(`${data[0].mark}.${dateStamp}`);
+  $('.stamp').eq(0).html(`${data[0].mark}`);
   // Apply status
   $('.status').eq(0).html(`${data[0].title}`);
 
@@ -163,7 +157,7 @@ module.exports = async (
   }));
   
   // remove the 'not signed label' when signed view
-  if (data[0].title.toUpperCase() === "SIGNED") {
+  if (data[0].title.toUpperCase().startsWith("SIGNED")) {
     $('.not-signed').remove();
   };
 
@@ -196,6 +190,9 @@ module.exports = async (
   $('.label, .not-signed').css("background-color", labelbackgroundCRBGA);
   $('.label, .autograph, .not-signed, .status, .stamp').css({ 'color': colourTheme });
   
+  // Allow labels to reach up to 50% of the width of the container
+  $('.label').css({ 'max-width': (imgW * 0.5) + "px" });
+
   // Cheerio provides the changes within a html document format
   // to return the SVG we remove this and provide the SVG 
   // data only
@@ -214,9 +211,15 @@ module.exports = async (
     output = output.replace(item, "");
   });
 
-  // Base64 output if parameter flag set to true
-  if (base64Encode) output = svg64(output);
+  // Base64 SVG output if parameter flag set to true
+  if (base64Encode && format.toUpperCase() === 'SVG') output = svg64(output);
 
+  // define image data return type
+  if (format.toUpperCase() === 'PNG'){
+    const pngOutput = await convert(output);
+    output = pngOutput;
+  } 
+    
   // console.log("Type: " + contentType + " Size W: " + imgW + " Size H: " + imgH);
   // console.timeEnd("Application");
   
