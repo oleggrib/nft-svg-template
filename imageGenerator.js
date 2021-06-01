@@ -118,7 +118,6 @@ module.exports = async (
     // common margin 
     svgMargin = rootPixelSize * 3;
 
-    // Not Signed Text
     $('.autograph-nft-not-signed text tspan').eq(0).attr({ 
       "x": rootPixelSize * 1.8, 
       "y": rootPixelSize * 3, 
@@ -129,6 +128,7 @@ module.exports = async (
       "y": rootPixelSize * 4.6, 
       "font-size": rootPixelSize * 1.6 
     });
+
     // Not Signed Background
     $('.autograph-nft-not-signed rect').attr({ 
       "x": rootPixelSize * 1.5,
@@ -158,33 +158,46 @@ module.exports = async (
   
   // add labels
   let incrementVal;
-  data.map((label, index) => {
-    if (index < 3) { // 3 is max ammount of autographs that can show on screen.
-      let textWidth = 0; 
-      label.name.match(/./g).concat(['.']).concat(label.twitterId.match(/./g)).map(char => {
-        const val = googleFontData[char];
-        // default if char not found e.g. Special Char (fall back)
-        // Applies the last disovered char or applies the font size.
-        if(!val) textWidth += incrementVal ? incrementVal : 21;
-        else {
-          // Calulate and increment the width.
-          incrementVal = Math.round(googleFontData[char] * (rootPixelSize * 1.3/10));  
-          textWidth += incrementVal;
-        }
-      });
 
-      labelTemplates += `
-        <svg class="label" xmlns="http://www.w3.org/2000/svg" x="${imgW - textWidth}" y="${imgH - svgMargin * 1.2}">
-            <rect x="0" y="0" width="${textWidth}" height="42" style="fill:rgb(255,255,255)" fill-opacity="0.5"></rect>
-            <text style="font-family: 'Barlow'; fill:white;" font-size="${Math.round(rootPixelSize * 1.3)}">
-                <tspan x="0" y="30">${label.name}.${label.twitterId}</tspan>
-            </text>
-        </svg>
-      `;
-    }
 
-    // 323 is what we want from Text Width.
-    // 
+  let labelData = data.slice(Math.max(data.length - 3, 0)).reverse();
+
+  labelData.map((label, index) => {
+    let textWidth = 0; 
+    label.name.match(/./g).concat(['.']).concat(label.twitterId.match(/./g)).map(char => {
+      const val = googleFontData[char];
+      // default if char not found e.g. Special Char (fall back)
+      // Applies the last disovered char or applies the font size
+      if(!val) textWidth += incrementVal ? incrementVal : 21;
+      else {
+        // Calulate and increment the width.
+        incrementVal = Math.round(googleFontData[char] * (rootPixelSize * 1.3/10));  
+        textWidth += incrementVal;
+      }
+    });
+
+    // space for photo
+    textWidth += rootPixelSize * 1.5;
+
+    // y Calc
+    const yPos = index * 50; //imgH - svgMargin * 1.2 - (index * imgH - svgMargin * 1.2);
+
+    labelTemplates += `
+      <svg class="label" xmlns="http://www.w3.org/2000/svg" x="${(imgW - textWidth) - (rootPixelSize * 1.5)}" y="${yPos}">
+        <rect x="0" y="0" width="${textWidth * 1.03}" height="${rootPixelSize * 2}" style="fill:rgb(255,255,255)" fill-opacity="0.5"></rect>
+        <text style="font-family: 'Barlow'; fill:white;" font-size="${Math.round(rootPixelSize * 1.3)}">
+            <tspan x="${rootPixelSize * (1.5 + 0.5)}" y="23">${label.name}.${label.twitterId}</tspan>
+        </text>
+        <svg x="${rootPixelSize * 0.22 }" y="${rootPixelSize * 0.22 }" width="${rootPixelSize * 1.6}" height="${rootPixelSize * 1.6}">
+          <defs>
+            <clipPath id="myCircle">
+              <circle cx="${rootPixelSize * 1.6/2}" cy="${rootPixelSize * 1.6/2}" r="${rootPixelSize * 1.6/2}" fill="#FFFFFF" />
+            </clipPath>
+          </defs>
+          <image width="${rootPixelSize * 1.6}" height="${rootPixelSize * 1.6}" clip-path="url(#myCircle)" />
+          </svg>
+      </svg>
+    `;
   });
   
   // // when there are too many autographs to display, add the length of the additional.
@@ -201,13 +214,13 @@ module.exports = async (
   $('.label-container').eq(0).append(`${labelTemplates}`);
 
   // // Add profile photos
-  // await Promise.all(data.map(async (label, index)  => {
-  //   const imagePhotoURL = await fetch(data[index].photoURL);
-  //   const imagePhotoURLBuffer = await imagePhotoURL.buffer();
-  //   const photoURLContentType = await imagePhotoURL.headers.get('content-type');
-  //   imagePhotoURLBase64 = `data:image/${photoURLContentType};base64,`+imagePhotoURLBuffer.toString('base64');
-  //   $('.profile-img').eq(index).css('background-image', 'url(' + imagePhotoURLBase64 + ')');
-  // }));
+  await Promise.all(data.map(async (label, index)  => {
+    const imagePhotoURL = await fetch(data[index].photoURL);
+    const imagePhotoURLBuffer = await imagePhotoURL.buffer();
+    const photoURLContentType = await imagePhotoURL.headers.get('content-type');
+    imagePhotoURLBase64 = `data:image/${photoURLContentType};base64,`+imagePhotoURLBuffer.toString('base64');
+    $('.label image').eq(index).attr('href', imagePhotoURLBase64);
+  }));
   
   // // remove the 'not signed label' when signed view
   // if (data[0].title.toUpperCase() === "SIGNED") {
