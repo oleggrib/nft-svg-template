@@ -43,20 +43,20 @@ imageGenerator(
       twitterId: "0987654321",
       mark: "123456"
     },
-    // {
-    //   title: "Signed",
-    //   photoURL: "https://pbs.twimg.com/profile_images/1084788308595617793/DOnqq1OM_400x400.jpg",
-    //   name: "@ethereum",
-    //   twitterId: "1237650954",
-    //   mark: "154321"
-    // },
-    // {
-    //   title: "Signed",
-    //   photoURL: "https://pbs.twimg.com/profile_images/1389823228533739522/-Tj2WF_6_400x400.jpg",
-    //   name: "@Polkadot",
-    //   twitterId: "43019393099",
-    //   mark: "1154321"
-    // },
+    {
+      title: "Signed",
+      photoURL: "https://pbs.twimg.com/profile_images/1084788308595617793/DOnqq1OM_400x400.jpg",
+      name: "@ethereum",
+      twitterId: "1237650954",
+      mark: "154321"
+    },
+    {
+      title: "Signed",
+      photoURL: "https://pbs.twimg.com/profile_images/1389823228533739522/-Tj2WF_6_400x400.jpg",
+      name: "@Polkadot",
+      twitterId: "43019393099",
+      mark: "1154321"
+    },
   ],
   false,
   format

@@ -185,7 +185,7 @@ module.exports = async (
 
   labelData.map((label, index) => {
 
-    const labelHeight = rootPixelSize * 1.5;
+    const labelHeight = rootPixelSize * 1.3;
     let textWidth = 0;
     let labelPositionByIndex = index * (labelHeight * 1.4);
     let offset = data.length > 3 ? labelHeight * 1.4 : 0;
@@ -204,21 +204,24 @@ module.exports = async (
       }
     });
     // space for photo
-    textWidth += rootPixelSize * 1.5;
+    textWidth += rootPixelSize * 0.1;
+    const imgWidth = rootPixelSize * 1.4;
+    const imgPadding = rootPixelSize * 0.15;
+    const autographFontSize = Math.round(rootPixelSize * 1.1);
     // label templates
     labelTemplates += `
       <svg class="label" xmlns="http://www.w3.org/2000/svg" x="${(imgW - textWidth) - (outerMargin)}" y="${yPos}">
-        <rect x="0" y="0" width="${textWidth * 1.03}" height="${rootPixelSize * 2}" style="fill:rgb(255,255,255)" fill-opacity="0.5" rx="2"></rect>
-        <text style="font-family: 'Barlow'; fill:white;" font-size="${Math.round(rootPixelSize * 1.3)}">
-            <tspan x="${rootPixelSize * (1.5 + 0.5)}" y="23">${label.name}.${label.twitterId}</tspan>
+        <rect x="0" y="0" width="${textWidth}" height="${rootPixelSize * 1.7}" style="fill:rgb(255,255,255)" fill-opacity="0.5" rx="2"></rect>
+        <text style="font-family: 'Barlow'; fill:white;" font-size="${autographFontSize}">
+            <tspan x="${rootPixelSize * 1.8}" y="${rootPixelSize * 1.2}">${label.name}.${label.twitterId}</tspan>
         </text>
-        <svg x="${rootPixelSize * 0.22 }" y="${rootPixelSize * 0.22 }" width="${rootPixelSize * 1.6}" height="${rootPixelSize * 1.6}">
+        <svg x="${imgPadding}" y="${imgPadding}" width="${imgWidth}" height="${imgWidth}">
           <defs>
             <clipPath id="myCircle">
-              <circle cx="${rootPixelSize * 1.6/2}" cy="${rootPixelSize * 1.6/2}" r="${rootPixelSize * 1.6/2}" fill="#FFFFFF" />
+              <circle cx="${imgWidth/2}" cy="${imgWidth/2}" r="${imgWidth/2}" fill="#FFFFFF" />
             </clipPath>
           </defs>
-          <image width="${rootPixelSize * 1.6}" height="${rootPixelSize * 1.6}" clip-path="url(#myCircle)" />
+          <image width="${imgWidth}" height="${imgWidth}" clip-path="url(#myCircle)" />
           </svg>
       </svg>
     `;
@@ -226,16 +229,17 @@ module.exports = async (
 
   // when there are too many autographs to display, add a more with the number of labels not shown.
   if (data.length > 3) {
-    const labelHeight = rootPixelSize * 1.5;
+    const autographFontSize = Math.round(rootPixelSize * 1.1);
+    const labelHeight = rootPixelSize * 1.3;
     let labelPositionByIndex = 0 * (labelHeight * 1.4);
     let offset = 0;
     const yPos = imgH - outerMargin - labelHeight - labelPositionByIndex - offset;
     const maxLabelTemplate = `
-      <svg class="label" xmlns="http://www.w3.org/2000/svg" x="${(imgW - (rootPixelSize * 8.5)) - (outerMargin)}" y="${yPos}">
+      <svg class="label" xmlns="http://www.w3.org/2000/svg" x="${(imgW - (autographFontSize * 6.5)) - (outerMargin)}" y="${yPos}">
         <g>
-          <rect x="0" y="0" width="${rootPixelSize * 8.5}" height="${labelHeight}" style="fill:rgb(255,255,255)" fill-opacity="0.5" rx="2"></rect>
-          <text style="font-family: 'Barlow'; fill:white;" font-size="${Math.round(rootPixelSize * 1.3)}">
-            <tspan x="${rootPixelSize * 0.2}" y="${rootPixelSize * 1.2}">AND ${data.length -3} MORE...</tspan>
+          <rect x="0" y="0" width="${autographFontSize * 6.5}" height="${labelHeight}" style="fill:rgb(255,255,255)" fill-opacity="0.5" rx="2"></rect>
+          <text style="font-family: 'Barlow'; fill:white;" font-size="${autographFontSize}">
+            <tspan x="${rootPixelSize * 0.2}" y="${rootPixelSize * 1.1}">AND ${data.length -3} MORE...</tspan>
           </text>
         </g>
       </svg>
