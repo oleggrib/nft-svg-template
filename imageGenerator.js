@@ -102,13 +102,16 @@ module.exports = async (
 
   }
 
-  let svgMargin, rootPixelSize;
+  let svgMargin, rootPixelSize, outerMargin;
 
   // set the image height and width and apply scale of labelling to image
   if (imgW && imgH) {
 
     // determine shortest in length (so we can apply the most suitable labelling).
     const shortestInLength = imgW < imgH ? imgW : imgH;
+
+    console.log(shortestInLength);
+
     // scale baseline of autograph / timestamp data
     rootPixelSize = shortestInLength / 16 * 0.64;
     // Apply Calculation (height / width)
@@ -118,26 +121,34 @@ module.exports = async (
     // common margin 
     svgMargin = rootPixelSize * 3;
 
+    // 5% outer margin
+    outerMargin = shortestInLength * 0.05;
+
     $('.autograph-nft-not-signed text tspan').eq(0).attr({ 
-      "x": rootPixelSize * 1.8, 
-      "y": rootPixelSize * 3, 
+      "x": outerMargin * 1.2, 
+      "y": (outerMargin) * 2.2, 
       "font-size": rootPixelSize * 1.6 
     });
     $('.autograph-nft-not-signed text tspan').eq(1).attr({ 
-      "x": rootPixelSize * 1.8, 
-      "y": rootPixelSize * 4.6, 
+      "x": outerMargin * 1.2, 
+      "y": (outerMargin) * 3.5, 
       "font-size": rootPixelSize * 1.6 
     });
 
     // Not Signed Background
     $('.autograph-nft-not-signed rect').attr({ 
-      "x": rootPixelSize * 1.5,
-      "y": rootPixelSize * 1.5,
+      "x": outerMargin,
+      "y": outerMargin,
       "width": svgMargin * 3.7, 
       "height": svgMargin * 1.2 
     });
     // Timestamp positioning
-    $('.timestamp text').attr({ "x": rootPixelSize * 1.5, "y": - (imgW - (rootPixelSize * 2)), "font-size": rootPixelSize * 1 });
+    $('.timestamp text').attr({ 
+      "x": outerMargin,
+      "y": - (imgW - (outerMargin * 1.5)), 
+      "font-size": rootPixelSize * 1 
+    }); 
+    // $('.timestamp text').attr({ "x": rootPixelSize * 1.5, "y": - (imgW - (rootPixelSize * 2)), "font-size": rootPixelSize * 1 });
   }
 
   // build date stamp string
@@ -150,7 +161,7 @@ module.exports = async (
   $('.nft').eq(0).attr('href', imageBase64);
   // Apply Stamp
   $('.timestamp text').text(`${data[0].mark}.${dateStamp}`);
-  // Apply status
+  // Apply status TODO
   // $('.status').eq(0).html(`${data[0].title}`);
 
   // Apply Labels
@@ -159,58 +170,67 @@ module.exports = async (
   // add labels
   let incrementVal;
 
-
   let labelData = data.slice(Math.max(data.length - 3, 0)).reverse();
 
-  labelData.map((label, index) => {
-    let textWidth = 0; 
-    label.name.match(/./g).concat(['.']).concat(label.twitterId.match(/./g)).map(char => {
-      const val = googleFontData[char];
-      // default if char not found e.g. Special Char (fall back)
-      // Applies the last disovered char or applies the font size
-      if(!val) textWidth += incrementVal ? incrementVal : 21;
-      else {
-        // Calulate and increment the width.
-        incrementVal = Math.round(googleFontData[char] * (rootPixelSize * 1.3/10));  
-        textWidth += incrementVal;
-      }
-    });
+  // var x = ["More...", "Label 3", "Label 2", "Label 1"];
 
-    // space for photo
-    textWidth += rootPixelSize * 1.5;
+  data.map((label, index) => {
+
+    let textWidth = 0;
+    const yPos = imgH - (outerMargin) - (rootPixelSize * 2);// * 1.8 + (index * (rootPixelSize * 2.1)); //imgH - svgMargin * 1.2 - (index * imgH - svgMargin * 1.2);
+    // when there are too many autographs to display, add the length of the additional.
+    if (index === 3) { 
+      const maxLabelTemplate = `
+        <svg class="label" xmlns="http://www.w3.org/2000/svg" x="${(imgW - (rootPixelSize * 8.5)) - (outerMargin)}" y="${yPos}">
+          <g>
+            <rect x="0" y="0" width="${rootPixelSize * 8.5}" height="${rootPixelSize * 1.5}" style="fill:rgb(255,255,255)" fill-opacity="0.5"></rect>
+            <text style="font-family: 'Barlow'; fill:white;" font-size="${Math.round(rootPixelSize * 1.3)}">
+              <tspan x="${rootPixelSize * 0.2}" y="${rootPixelSize * 1.2}">AND ${data.length -3} MORE...</tspan>
+            </text>
+          </g>
+        </svg>
+      `;
+      labelTemplates += maxLabelTemplate;
+    };
+
+    // let textWidth = 0; 
+    // label.name.match(/./g).concat(['.']).concat(label.twitterId.match(/./g)).map(char => {
+    //   const val = googleFontData[char];
+    //   // default if char not found e.g. Special Char (fall back)
+    //   // Applies the last disovered char or applies the font size
+    //   if(!val) textWidth += incrementVal ? incrementVal : 21;
+    //   else {
+    //     // Calulate and increment the width.
+    //     incrementVal = Math.round(googleFontData[char] * (rootPixelSize * 1.3/10));  
+    //     textWidth += incrementVal;
+    //   }
+    // });
+
+    // // space for photo
+    // textWidth += rootPixelSize * 1.5;
 
     // y Calc
-    const yPos = index * 50; //imgH - svgMargin * 1.2 - (index * imgH - svgMargin * 1.2);
+    // const yPos = imgH - svgMargin * 1.8 + (index * (rootPixelSize * 2.1)); //imgH - svgMargin * 1.2 - (index * imgH - svgMargin * 1.2);
 
-    labelTemplates += `
-      <svg class="label" xmlns="http://www.w3.org/2000/svg" x="${(imgW - textWidth) - (rootPixelSize * 1.5)}" y="${yPos}">
-        <rect x="0" y="0" width="${textWidth * 1.03}" height="${rootPixelSize * 2}" style="fill:rgb(255,255,255)" fill-opacity="0.5"></rect>
-        <text style="font-family: 'Barlow'; fill:white;" font-size="${Math.round(rootPixelSize * 1.3)}">
-            <tspan x="${rootPixelSize * (1.5 + 0.5)}" y="23">${label.name}.${label.twitterId}</tspan>
-        </text>
-        <svg x="${rootPixelSize * 0.22 }" y="${rootPixelSize * 0.22 }" width="${rootPixelSize * 1.6}" height="${rootPixelSize * 1.6}">
-          <defs>
-            <clipPath id="myCircle">
-              <circle cx="${rootPixelSize * 1.6/2}" cy="${rootPixelSize * 1.6/2}" r="${rootPixelSize * 1.6/2}" fill="#FFFFFF" />
-            </clipPath>
-          </defs>
-          <image width="${rootPixelSize * 1.6}" height="${rootPixelSize * 1.6}" clip-path="url(#myCircle)" />
-          </svg>
-      </svg>
-    `;
+    // labelTemplates += `
+      // <svg class="label" xmlns="http://www.w3.org/2000/svg" x="${(imgW - textWidth) - (outerMargin)}" y="${yPos}">
+      //   <rect x="0" y="0" width="${textWidth * 1.03}" height="${rootPixelSize * 2}" style="fill:rgb(255,255,255)" fill-opacity="0.5"></rect>
+      //   <text style="font-family: 'Barlow'; fill:white;" font-size="${Math.round(rootPixelSize * 1.3)}">
+      //       <tspan x="${rootPixelSize * (1.5 + 0.5)}" y="23">${label.name}.${label.twitterId}</tspan>
+      //   </text>
+      //   <svg x="${rootPixelSize * 0.22 }" y="${rootPixelSize * 0.22 }" width="${rootPixelSize * 1.6}" height="${rootPixelSize * 1.6}">
+      //     <defs>
+      //       <clipPath id="myCircle">
+      //         <circle cx="${rootPixelSize * 1.6/2}" cy="${rootPixelSize * 1.6/2}" r="${rootPixelSize * 1.6/2}" fill="#FFFFFF" />
+      //       </clipPath>
+      //     </defs>
+      //     <image width="${rootPixelSize * 1.6}" height="${rootPixelSize * 1.6}" clip-path="url(#myCircle)" />
+      //     </svg>
+      // </svg>
+    // `;
   });
   
-  // // when there are too many autographs to display, add the length of the additional.
-  // if (data.length > 3) { 
-  //   const maxLabelTemplate = `
-  //   <div class="label">
-  //     AND ${data.length -3} MORE...
-  //   </div>
-  // `;
-  //   labelTemplates += maxLabelTemplate;
-  // };
-  
-  // // add all labels
+  // add all labels
   $('.label-container').eq(0).append(`${labelTemplates}`);
 
   // // Add profile photos
