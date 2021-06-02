@@ -15,7 +15,6 @@ const fetch = require('node-fetch');
 const sizeOf = require('image-size');
 
 // SVG Template
-// const template = require("./htmlTemplates/labelled_autograph_template");
 const template = require("./htmlTemplates/SVG-Template-Test-Output");
 
 /*
@@ -63,37 +62,37 @@ module.exports = async (
   // if(!contentType) throw 'Could not define content type';
   
   // if SVG
-  // if (contentType.indexOf("svg") > -1) {
+  if (contentType.indexOf("svg") > -1) {
 
-  //   // get SVG element from response
-  //   svgUrlData = await imageUrlData.text();
-  //   // [x, y, width, height]
+    // get SVG element from response
+    svgUrlData = await imageUrlData.text();
+    // [x, y, width, height]
 
-  //   // base64 encode SVG
-  //   imageBase64 = svg64(svgUrlData);
+    // base64 encode SVG
+    imageBase64 = svg64(svgUrlData);
 
-  //   const svgEl = $("svg");
-  //   const svgViewBox = $(svgEl).attr('viewBox');
-  //   const svgWidth = $(svgEl).attr('width');
-  //   const svgHeight = $(svgEl).attr('height');
-  //   let svgViewBoxData = svgViewBox ? $(svg).attr('viewBox').split(' ') : undefined;
+    const svgEl = $("svg").eq(0);
+    const svgViewBox = $(svgEl).attr('viewBox');
+    const svgWidth = $(svgEl).attr('width');
+    const svgHeight = $(svgEl).attr('height');
+    let svgViewBoxData = svgViewBox ? $(svg).attr('viewBox').split(' ') : undefined;
   
-  //   if (svgViewBoxData){
-  //     // apply height width of SVG from ViewBox values
-  //     imgW = viewBoxData[2];
-  //     imgH = viewBoxData[3];
-  //   } else if(svgWidth && svgHeight) {
-  //     // apply height width of SVG from W/H values
-  //     imgW = svgWidth;
-  //     imgH = svgHeight;
-  //     $(svg).attr('viewBox') = `[0, 0, ${imgW}, ${imgH}]`;
-  //   } else {
-  //     // fallback if an image size cannot be found
-  //     imgW = 500;
-  //     imgH = 500;
-  //     $(svg).attr('viewBox') = `[0, 0, 500, 500]`;
-  //   }
-  // }
+    if (svgViewBoxData){
+      // apply height width of SVG from ViewBox values
+      imgW = viewBoxData[2];
+      imgH = viewBoxData[3];
+    } else if(svgWidth && svgHeight) {
+      // apply height width of SVG from W/H values
+      imgW = svgWidth;
+      imgH = svgHeight;
+      svgEl.attr('viewBox') = `[0, 0, ${imgW}, ${imgH}]`;
+    } else {
+      // fallback if an image size cannot be found
+      imgW = 500;
+      imgH = 500;
+      svgEl.attr('viewBox') = `[0, 0, 500, 500]`;
+    }
+  }
 
   // if other (PNG, JPG, Gif)
   if (contentType.indexOf("svg") <= -1) {
@@ -152,7 +151,6 @@ module.exports = async (
       "y": - (imgW - (outerMargin * 1.5)), 
       "font-size": rootPixelSize * 1 
     }); 
-    // $('.timestamp text').attr({ "x": rootPixelSize * 1.5, "y": - (imgW - (rootPixelSize * 2)), "font-size": rootPixelSize * 1 });
   }
 
   // build date stamp string
@@ -176,82 +174,103 @@ module.exports = async (
   // add labels
   let incrementVal;
 
-  // Get the top 3 labels
+  // Collect the last three labels
   let labelData = data.slice(0, 3);
 
-  // TODO find a cleaner way to do this
-  if (data.length > 3) labelData.push("LABEL");
+  // Collect the last three labels
+  // if (data.length > 3) labelData.push("LABEL");
 
+  // Revers to we have last to first order
   labelData = labelData.reverse();
 
   labelData.map((label, index) => {
 
     const labelHeight = rootPixelSize * 1.5;
-
     let textWidth = 0;
-    const yPos = imgH - (outerMargin) - (rootPixelSize * 1.5) - (index * (labelHeight * 1.4)); // * 1.8 + (index * (rootPixelSize * 2.1)); //imgH - svgMargin * 1.2 - (index * imgH - svgMargin * 1.2);
-    // when there are too many autographs to display, add the length of the additional.
-    if (index === 0 && data.length > 3) { 
-      const maxLabelTemplate = `
-        <svg class="label" xmlns="http://www.w3.org/2000/svg" x="${(imgW - (rootPixelSize * 8.5)) - (outerMargin)}" y="${yPos}">
-          <g>
-            <rect x="0" y="0" width="${rootPixelSize * 8.5}" height="${labelHeight}" style="fill:rgb(255,255,255)" fill-opacity="0.5"></rect>
-            <text style="font-family: 'Barlow'; fill:white;" font-size="${Math.round(rootPixelSize * 1.3)}">
-              <tspan x="${rootPixelSize * 0.2}" y="${rootPixelSize * 1.2}">AND ${data.length -3} MORE...</tspan>
-            </text>
-          </g>
-        </svg>
-      `;
-      labelTemplates += maxLabelTemplate;
-    };
-
-    if (index > 0 || data.length <= 3) { 
-      // let textWidth = 0; 
-      label.name.match(/./g).concat(['.']).concat(label.twitterId.match(/./g)).map(char => {
-        const val = googleFontData[char];
-        // default if char not found e.g. Special Char (fall back)
-        // Applies the last disovered char or applies the font size
-        if(!val) textWidth += incrementVal ? incrementVal : 21;
-        else {
-          // Calulate and increment the width.
-          incrementVal = Math.round(googleFontData[char] * (rootPixelSize * 1.3/10));  
-          textWidth += incrementVal;
-        }
-      });
-      // space for photo
-      textWidth += rootPixelSize * 1.5;
-      // y Calc
-      // const yPos = imgH - svgMargin * 1.8 + (index * (rootPixelSize * 2.1)); //imgH - svgMargin * 1.2 - (index * imgH - svgMargin * 1.2);
-      labelTemplates += `
-        <svg class="label" xmlns="http://www.w3.org/2000/svg" x="${(imgW - textWidth) - (outerMargin)}" y="${yPos}">
-          <rect x="0" y="0" width="${textWidth * 1.03}" height="${rootPixelSize * 2}" style="fill:rgb(255,255,255)" fill-opacity="0.5"></rect>
-          <text style="font-family: 'Barlow'; fill:white;" font-size="${Math.round(rootPixelSize * 1.3)}">
-              <tspan x="${rootPixelSize * (1.5 + 0.5)}" y="23">${label.name}.${label.twitterId}</tspan>
-          </text>
-          <svg x="${rootPixelSize * 0.22 }" y="${rootPixelSize * 0.22 }" width="${rootPixelSize * 1.6}" height="${rootPixelSize * 1.6}">
-            <defs>
-              <clipPath id="myCircle">
-                <circle cx="${rootPixelSize * 1.6/2}" cy="${rootPixelSize * 1.6/2}" r="${rootPixelSize * 1.6/2}" fill="#FFFFFF" />
-              </clipPath>
-            </defs>
-            <image width="${rootPixelSize * 1.6}" height="${rootPixelSize * 1.6}" clip-path="url(#myCircle)" />
-            </svg>
-        </svg>
-      `;
-    }
+    let labelPositionByIndex = index * (labelHeight * 1.4);
+    let offset = data.length > 3 ? labelHeight * 1.4 : 0;
+    const yPos = imgH - outerMargin - labelHeight - labelPositionByIndex - offset;
+ 
+    // let textWidth = 0; 
+    label.name.match(/./g).concat(['.']).concat(label.twitterId.match(/./g)).map(char => {
+      const val = googleFontData[char];
+      // default if char not found e.g. Special Char (fall back)
+      // Applies the last disovered char or applies the font size
+      if(!val) textWidth += incrementVal ? incrementVal : 21;
+      else {
+        // Calulate and increment the width.
+        incrementVal = Math.round(googleFontData[char] * (rootPixelSize * 1.3/10));  
+        textWidth += incrementVal;
+      }
+    });
+    // space for photo
+    textWidth += rootPixelSize * 1.5;
+    // label templates
+    labelTemplates += `
+      <svg class="label" xmlns="http://www.w3.org/2000/svg" x="${(imgW - textWidth) - (outerMargin)}" y="${yPos}">
+        <rect x="0" y="0" width="${textWidth * 1.03}" height="${rootPixelSize * 2}" style="fill:rgb(255,255,255)" fill-opacity="0.5" rx="2"></rect>
+        <text style="font-family: 'Barlow'; fill:white;" font-size="${Math.round(rootPixelSize * 1.3)}">
+            <tspan x="${rootPixelSize * (1.5 + 0.5)}" y="23">${label.name}.${label.twitterId}</tspan>
+        </text>
+        <svg x="${rootPixelSize * 0.22 }" y="${rootPixelSize * 0.22 }" width="${rootPixelSize * 1.6}" height="${rootPixelSize * 1.6}">
+          <defs>
+            <clipPath id="myCircle">
+              <circle cx="${rootPixelSize * 1.6/2}" cy="${rootPixelSize * 1.6/2}" r="${rootPixelSize * 1.6/2}" fill="#FFFFFF" />
+            </clipPath>
+          </defs>
+          <image width="${rootPixelSize * 1.6}" height="${rootPixelSize * 1.6}" clip-path="url(#myCircle)" />
+          </svg>
+      </svg>
+    `;
   });
+
+  // when there are too many autographs to display, add a more with the number of labels not shown.
+  if (data.length > 3) {
+    const labelHeight = rootPixelSize * 1.5;
+    let labelPositionByIndex = 0 * (labelHeight * 1.4);
+    let offset = 0;
+    const yPos = imgH - outerMargin - labelHeight - labelPositionByIndex - offset;
+    const maxLabelTemplate = `
+      <svg class="label" xmlns="http://www.w3.org/2000/svg" x="${(imgW - (rootPixelSize * 8.5)) - (outerMargin)}" y="${yPos}">
+        <g>
+          <rect x="0" y="0" width="${rootPixelSize * 8.5}" height="${labelHeight}" style="fill:rgb(255,255,255)" fill-opacity="0.5" rx="2"></rect>
+          <text style="font-family: 'Barlow'; fill:white;" font-size="${Math.round(rootPixelSize * 1.3)}">
+            <tspan x="${rootPixelSize * 0.2}" y="${rootPixelSize * 1.2}">AND ${data.length -3} MORE...</tspan>
+          </text>
+        </g>
+      </svg>
+    `;
+    labelTemplates += maxLabelTemplate;
+  };
   
   // add all labels
   $('.label-container').eq(0).append(`${labelTemplates}`);
 
   // Add profile photos
-  await Promise.all(data.map(async (label, index)  => {
-    const imagePhotoURL = await fetch(data[index].photoURL);
+  await Promise.all(labelData.map(async (label, index)  => {
+    const imagePhotoURL = await fetch(label.photoURL);
     const imagePhotoURLBuffer = await imagePhotoURL.buffer();
     const photoURLContentType = await imagePhotoURL.headers.get('content-type');
     imagePhotoURLBase64 = `data:image/${photoURLContentType};base64,`+imagePhotoURLBuffer.toString('base64');
     $('.label image').eq(index).attr('href', imagePhotoURLBase64);
   }));
+
+  const labelHeight = rootPixelSize * 1.75; // Must be the right label height for calc to work.
+  const heightOfText = rootPixelSize * 1;
+  // let offset = data.length > 3 ? labelHeight * 1.4 : 0;
+  // const yPosStatus = imgH - outerMargin - (labelHeight * (labelData.length * 2)) - offset - heightOfText;
+
+  // calculation should be: (margin from bottom) + (label height * length) + (spacing) + (height of text)
+  const yPosStatus = imgH - (outerMargin + (labelHeight * labelData.length) + (rootPixelSize * 2) + heightOfText);
+
+  $('.status').attr({
+    "x": (imgW - rootPixelSize * 4) - (outerMargin), 
+    "y": yPosStatus,
+  });
+  
+  $('.status text').attr({
+    "font-size": rootPixelSize * 1 
+  });
   
   // // remove the 'not signed label' when signed view
   // if (data[0].title.toUpperCase() === "SIGNED") {

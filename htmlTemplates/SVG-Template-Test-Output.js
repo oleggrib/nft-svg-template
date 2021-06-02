@@ -1,6 +1,6 @@
 
 module.exports = `
-<svg class="autograph-nft-wrapper" preserveAspectRatio="xMidYMid meet" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+<svg viewBox="0,0,0,0" class="autograph-nft-wrapper" preserveAspectRatio="xMidYMid meet" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
 <style>
 
 object {
@@ -120,11 +120,11 @@ svg {
   }
     </style>
     <g x="0" y="0">
-      <svg class="timestamp" xmlns="http://www.w3.org/2000/svg" style="fill: white; font-family: 'Source Code Pro'">
+      <svg xmlns="http://www.w3.org/2000/svg">
         <image class="nft" x="0" y="0" href=""></image>
       </svg>
       <g class="autograph-nft-not-signed">
-        <rect x="32" y="32" width="160" height="60" style="fill:rgb(255,255,255)" fill-opacity="0.5"></rect>
+        <rect x="32" y="32" width="160" height="60" style="fill:rgb(255,255,255)" fill-opacity="0.5" rx="2"></rect>
         <text style="font-family: 'Barlow'; fill:white; font-style: italic;">
           <tspan>Not Signed</tspan>
           <tspan>Ongoing Offer!</tspan>
@@ -132,6 +132,9 @@ svg {
       </g>
       <svg class="timestamp" xmlns="http://www.w3.org/2000/svg" style="fill: white; font-family: 'Source Code Pro'">
         <text transform="rotate(90)">3420434204.WIPEOUT2097</text>
+      </svg>
+      <svg class="status" xmlns="http://www.w3.org/2000/svg" style="fill: white; font-family: 'Source Code Pro'">
+        <text x="0" y="30">Signed:</text>
       </svg>
       <g class="label-container"></g>
     </g>
