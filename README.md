@@ -3,6 +3,12 @@
 See for converting the image to SVG, Jpg, PNG etc.
 https://www.npmjs.com/package/html-to-image
 
+## MVP TODO's
+
+- Correct labelling logic, works for 1, 2, 3, breaks at 4.
+- Re-apply the colour checking
+- Re-enable the SVG image types
+
 ## TODO's
 
 - Correct image re-sizing calculation (so it looks the same regardless of scaling)

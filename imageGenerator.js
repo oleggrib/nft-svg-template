@@ -185,11 +185,12 @@ module.exports = async (
 
   labelData.map((label, index) => {
 
-    const labelHeight = rootPixelSize * 1.3;
+    const labelHeight = rootPixelSize * 1.7;
     let textWidth = 0;
-    let labelPositionByIndex = index * (labelHeight * 1.4);
-    let offset = data.length > 3 ? labelHeight * 1.4 : 0;
-    const yPos = imgH - outerMargin - labelHeight - labelPositionByIndex - offset;
+    let space = 1.1;
+    let labelPositionByIndex = index * (labelHeight * space);
+    let offset = data.length > 3 ? labelHeight * 1.8 : 0;
+    const yPos = imgH - labelHeight - labelPositionByIndex - offset - outerMargin;
  
     // let textWidth = 0; 
     label.name.match(/./g).concat(['.']).concat(label.twitterId.match(/./g)).map(char => {
@@ -229,11 +230,9 @@ module.exports = async (
 
   // when there are too many autographs to display, add a more with the number of labels not shown.
   if (data.length > 3) {
+    const labelHeight = rootPixelSize * 1.7;
     const autographFontSize = Math.round(rootPixelSize * 1.1);
-    const labelHeight = rootPixelSize * 1.3;
-    let labelPositionByIndex = 0 * (labelHeight * 1.4);
-    let offset = 0;
-    const yPos = imgH - outerMargin - labelHeight - labelPositionByIndex - offset;
+    const yPos = imgH - labelHeight * 1.7; 
     const maxLabelTemplate = `
       <svg class="label" xmlns="http://www.w3.org/2000/svg" x="${(imgW - (autographFontSize * 6.5)) - (outerMargin)}" y="${yPos}">
         <g>
