@@ -1,5 +1,8 @@
 const cheerio = require('cheerio');
 
+// convert
+const svg2png = require('svg-png-converter').svg2png;
+
 // lib to detect image contrast returning if image is light or dark
 const isLightContrastImage = require('./isLightContrastImage');
 
@@ -41,6 +44,7 @@ module.exports = async (
   imageUrl,
   data,
   base64Encode,
+  format
 ) => {
 
   // console.time("Application");
@@ -110,7 +114,7 @@ module.exports = async (
     // determine shortest in length (so we can apply the most suitable labelling).
     const shortestInLength = imgW < imgH ? imgW : imgH;
 
-    console.log(shortestInLength);
+    // console.log(shortestInLength);
 
     // scale baseline of autograph / timestamp data
     rootPixelSize = shortestInLength / 16 * 0.64;
@@ -159,6 +163,8 @@ module.exports = async (
   
   // Apply NFT Background colour
   $('.nft').eq(0).attr('href', imageBase64);
+  // $('.label image').eq(index).attr('href', imagePhotoURLBase64);
+  // $('.autograph-nft').eq(0).css('background-image', 'url(' + imageBase64 + ')');
   // Apply Stamp
   $('.timestamp text').text(`${data[0].mark}.${dateStamp}`);
   // Apply status TODO
@@ -170,20 +176,26 @@ module.exports = async (
   // add labels
   let incrementVal;
 
-  let labelData = data.slice(Math.max(data.length - 3, 0)).reverse();
+  // Get the top 3 labels
+  let labelData = data.slice(0, 3);
 
-  // var x = ["More...", "Label 3", "Label 2", "Label 1"];
+  // TODO find a cleaner way to do this
+  if (data.length > 3) labelData.push("LABEL");
 
-  data.map((label, index) => {
+  labelData = labelData.reverse();
+
+  labelData.map((label, index) => {
+
+    const labelHeight = rootPixelSize * 1.5;
 
     let textWidth = 0;
-    const yPos = imgH - (outerMargin) - (rootPixelSize * 2);// * 1.8 + (index * (rootPixelSize * 2.1)); //imgH - svgMargin * 1.2 - (index * imgH - svgMargin * 1.2);
+    const yPos = imgH - (outerMargin) - (rootPixelSize * 1.5) - (index * (labelHeight * 1.4)); // * 1.8 + (index * (rootPixelSize * 2.1)); //imgH - svgMargin * 1.2 - (index * imgH - svgMargin * 1.2);
     // when there are too many autographs to display, add the length of the additional.
-    if (index === 3) { 
+    if (index === 0 && data.length > 3) { 
       const maxLabelTemplate = `
         <svg class="label" xmlns="http://www.w3.org/2000/svg" x="${(imgW - (rootPixelSize * 8.5)) - (outerMargin)}" y="${yPos}">
           <g>
-            <rect x="0" y="0" width="${rootPixelSize * 8.5}" height="${rootPixelSize * 1.5}" style="fill:rgb(255,255,255)" fill-opacity="0.5"></rect>
+            <rect x="0" y="0" width="${rootPixelSize * 8.5}" height="${labelHeight}" style="fill:rgb(255,255,255)" fill-opacity="0.5"></rect>
             <text style="font-family: 'Barlow'; fill:white;" font-size="${Math.round(rootPixelSize * 1.3)}">
               <tspan x="${rootPixelSize * 0.2}" y="${rootPixelSize * 1.2}">AND ${data.length -3} MORE...</tspan>
             </text>
@@ -193,47 +205,46 @@ module.exports = async (
       labelTemplates += maxLabelTemplate;
     };
 
-    // let textWidth = 0; 
-    // label.name.match(/./g).concat(['.']).concat(label.twitterId.match(/./g)).map(char => {
-    //   const val = googleFontData[char];
-    //   // default if char not found e.g. Special Char (fall back)
-    //   // Applies the last disovered char or applies the font size
-    //   if(!val) textWidth += incrementVal ? incrementVal : 21;
-    //   else {
-    //     // Calulate and increment the width.
-    //     incrementVal = Math.round(googleFontData[char] * (rootPixelSize * 1.3/10));  
-    //     textWidth += incrementVal;
-    //   }
-    // });
-
-    // // space for photo
-    // textWidth += rootPixelSize * 1.5;
-
-    // y Calc
-    // const yPos = imgH - svgMargin * 1.8 + (index * (rootPixelSize * 2.1)); //imgH - svgMargin * 1.2 - (index * imgH - svgMargin * 1.2);
-
-    // labelTemplates += `
-      // <svg class="label" xmlns="http://www.w3.org/2000/svg" x="${(imgW - textWidth) - (outerMargin)}" y="${yPos}">
-      //   <rect x="0" y="0" width="${textWidth * 1.03}" height="${rootPixelSize * 2}" style="fill:rgb(255,255,255)" fill-opacity="0.5"></rect>
-      //   <text style="font-family: 'Barlow'; fill:white;" font-size="${Math.round(rootPixelSize * 1.3)}">
-      //       <tspan x="${rootPixelSize * (1.5 + 0.5)}" y="23">${label.name}.${label.twitterId}</tspan>
-      //   </text>
-      //   <svg x="${rootPixelSize * 0.22 }" y="${rootPixelSize * 0.22 }" width="${rootPixelSize * 1.6}" height="${rootPixelSize * 1.6}">
-      //     <defs>
-      //       <clipPath id="myCircle">
-      //         <circle cx="${rootPixelSize * 1.6/2}" cy="${rootPixelSize * 1.6/2}" r="${rootPixelSize * 1.6/2}" fill="#FFFFFF" />
-      //       </clipPath>
-      //     </defs>
-      //     <image width="${rootPixelSize * 1.6}" height="${rootPixelSize * 1.6}" clip-path="url(#myCircle)" />
-      //     </svg>
-      // </svg>
-    // `;
+    if (index > 0 || data.length <= 3) { 
+      // let textWidth = 0; 
+      label.name.match(/./g).concat(['.']).concat(label.twitterId.match(/./g)).map(char => {
+        const val = googleFontData[char];
+        // default if char not found e.g. Special Char (fall back)
+        // Applies the last disovered char or applies the font size
+        if(!val) textWidth += incrementVal ? incrementVal : 21;
+        else {
+          // Calulate and increment the width.
+          incrementVal = Math.round(googleFontData[char] * (rootPixelSize * 1.3/10));  
+          textWidth += incrementVal;
+        }
+      });
+      // space for photo
+      textWidth += rootPixelSize * 1.5;
+      // y Calc
+      // const yPos = imgH - svgMargin * 1.8 + (index * (rootPixelSize * 2.1)); //imgH - svgMargin * 1.2 - (index * imgH - svgMargin * 1.2);
+      labelTemplates += `
+        <svg class="label" xmlns="http://www.w3.org/2000/svg" x="${(imgW - textWidth) - (outerMargin)}" y="${yPos}">
+          <rect x="0" y="0" width="${textWidth * 1.03}" height="${rootPixelSize * 2}" style="fill:rgb(255,255,255)" fill-opacity="0.5"></rect>
+          <text style="font-family: 'Barlow'; fill:white;" font-size="${Math.round(rootPixelSize * 1.3)}">
+              <tspan x="${rootPixelSize * (1.5 + 0.5)}" y="23">${label.name}.${label.twitterId}</tspan>
+          </text>
+          <svg x="${rootPixelSize * 0.22 }" y="${rootPixelSize * 0.22 }" width="${rootPixelSize * 1.6}" height="${rootPixelSize * 1.6}">
+            <defs>
+              <clipPath id="myCircle">
+                <circle cx="${rootPixelSize * 1.6/2}" cy="${rootPixelSize * 1.6/2}" r="${rootPixelSize * 1.6/2}" fill="#FFFFFF" />
+              </clipPath>
+            </defs>
+            <image width="${rootPixelSize * 1.6}" height="${rootPixelSize * 1.6}" clip-path="url(#myCircle)" />
+            </svg>
+        </svg>
+      `;
+    }
   });
   
   // add all labels
   $('.label-container').eq(0).append(`${labelTemplates}`);
 
-  // // Add profile photos
+  // Add profile photos
   await Promise.all(data.map(async (label, index)  => {
     const imagePhotoURL = await fetch(data[index].photoURL);
     const imagePhotoURLBuffer = await imagePhotoURL.buffer();
@@ -303,6 +314,16 @@ module.exports = async (
 
   // console.log("Type: " + contentType + " Size W: " + imgW + " Size H: " + imgH);
   // console.timeEnd("Application");
+
+  // // define image data return type
+  if (format.toUpperCase() === 'PNG') {
+    const pngOutput = await svg2png({
+      input: output,
+      encoding: base64Encode ? 'dataURL' : 'buffer',
+      format: 'png',
+    });
+    output = pngOutput;
+  }
   
   return output;
 
