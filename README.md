@@ -5,7 +5,8 @@ https://www.npmjs.com/package/html-to-image
 
 ## MVP TODO's
 
-- Correct labelling logic, works for 1, 2, 3, breaks at 4.
+- Correct labelling logic, works for 1, 2, 3, breaks at 4. (done)
+- Correct label widths
 - Re-apply the colour checking
 - Re-enable the SVG image types
 - Re-apply 'Signed' / 'Requested' labels

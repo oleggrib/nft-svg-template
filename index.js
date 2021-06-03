@@ -30,28 +30,28 @@ imageGenerator(
   // "https://storage.opensea.io/files/0fbeacdb0bf089800109f3b1d0401c6b.svg",
   [
     {
-      title: "Requesting",
+      title: "Requesting:",
       photoURL: "https://pbs.twimg.com/profile_images/264316321/beeple_headshot_beat_up_400x400.jpg",
       name: "@Beeple",
       twitterId: "1234567890",
       mark: "17654321"
     },
     {
-      title: "Signed",
+      title: "Signed:",
       photoURL: "https://pbs.twimg.com/profile_images/879737418609553409/yjnyAhAI_400x400.jpg",
       name: "@cryptopunksbot",
       twitterId: "0987654321",
       mark: "123456"
     },
     {
-      title: "Signed",
+      title: "Signed:",
       photoURL: "https://pbs.twimg.com/profile_images/1084788308595617793/DOnqq1OM_400x400.jpg",
       name: "@ethereum",
       twitterId: "1237650954",
       mark: "154321"
     },
     {
-      title: "Signed",
+      title: "Signed:",
       photoURL: "https://pbs.twimg.com/profile_images/1389823228533739522/-Tj2WF_6_400x400.jpg",
       name: "@Polkadot",
       twitterId: "43019393099",

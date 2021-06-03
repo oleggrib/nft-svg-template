@@ -62,37 +62,35 @@ module.exports = async (
   // if(!contentType) throw 'Could not define content type';
   
   // if SVG
-  if (contentType.indexOf("svg") > -1) {
+  // if (contentType.indexOf("svg") > -1) {
 
-    // get SVG element from response
-    svgUrlData = await imageUrlData.text();
-    // [x, y, width, height]
+  //   // get SVG element from response
+  //   svgUrlData = await imageUrlData.text();
+  //   // [x, y, width, height]
 
-    // base64 encode SVG
-    imageBase64 = svg64(svgUrlData);
+  //   // base64 encode SVG
+  //   imageBase64 = svg64(svgUrlData);
 
-    const svgEl = $("svg").eq(0);
-    const svgViewBox = $(svgEl).attr('viewBox');
-    const svgWidth = $(svgEl).attr('width');
-    const svgHeight = $(svgEl).attr('height');
-    let svgViewBoxData = svgViewBox ? $(svg).attr('viewBox').split(' ') : undefined;
+  //   const svgEl = $("svg");
+  //   const svgViewBox = $(svgEl).attr('viewBox');
+  //   const svgWidth = $(svgEl).attr('width');
+  //   const svgHeight = $(svgEl).attr('height');
+  //   let svgViewBoxData = svgViewBox ? $(svg).attr('viewBox').split(' ') : undefined;
   
-    if (svgViewBoxData){
-      // apply height width of SVG from ViewBox values
-      imgW = viewBoxData[2];
-      imgH = viewBoxData[3];
-    } else if(svgWidth && svgHeight) {
-      // apply height width of SVG from W/H values
-      imgW = svgWidth;
-      imgH = svgHeight;
-      svgEl.attr('viewBox') = `[0, 0, ${imgW}, ${imgH}]`;
-    } else {
-      // fallback if an image size cannot be found
-      imgW = 500;
-      imgH = 500;
-      svgEl.attr('viewBox') = `[0, 0, 500, 500]`;
-    }
-  }
+  //   if (svgViewBoxData){
+  //     // apply height width of SVG from ViewBox values
+  //     imgW = viewBoxData[2];
+  //     imgH = viewBoxData[3];
+  //   } else if(svgWidth && svgHeight) {
+  //     // apply height width of SVG from W/H values
+  //     imgW = svgWidth;
+  //     imgH = svgHeight;
+  //   } else {
+  //     // fallback if an image size cannot be found
+  //     imgW = 500;
+  //     imgH = 500;
+  //   }
+  // }
 
   // if other (PNG, JPG, Gif)
   if (contentType.indexOf("svg") <= -1) {
@@ -166,7 +164,7 @@ module.exports = async (
   // Apply Stamp
   $('.timestamp text').text(`${data[0].mark}.${dateStamp}`);
   // Apply status TODO
-  // $('.status').eq(0).html(`${data[0].title}`);
+  $('.status text').eq(0).text(`${data[0].title}`);
 
   // Apply Labels
   let labelTemplates = '';
@@ -271,8 +269,15 @@ module.exports = async (
   // calculation should be: (margin from bottom) + (label height * length) + (spacing) + (height of text)
   // const yPosStatus = imgH - (outerMargin + (labelHeight * labelData.length) + (rootPixelSize * 2) + heightOfText);
 
+  let xPosStatus;
+  if (data[0].title.toUpperCase() === "SIGNED") {  
+    xPosStatus = (imgW - rootPixelSize * 3.2) - (outerMargin); 
+  } else { 
+    xPosStatus = (imgW - rootPixelSize * 5.2) - (outerMargin); 
+  }
+
   $('.status').attr({
-    "x": (imgW - rootPixelSize * 3.2) - (outerMargin), 
+    "x": xPosStatus,
     "y": lastLabelYPos - rootPixelSize * 2.5,
   });
   
