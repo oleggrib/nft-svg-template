@@ -183,6 +183,8 @@ module.exports = async (
   // Revers to we have last to first order
   labelData = labelData.reverse();
 
+  let lastLabelYPos;
+
   labelData.map((label, index) => {
 
     const labelHeight = rootPixelSize * 1.7;
@@ -190,7 +192,8 @@ module.exports = async (
     let space = 1.1;
     let labelPositionByIndex = index * (labelHeight * space);
     let offset = data.length > 3 ? labelHeight * 1.8 : 0;
-    const yPos = imgH - labelHeight - labelPositionByIndex - offset - outerMargin;
+    let addOuterMargin = data.length <= 3 ? outerMargin : 0;
+    const yPos = imgH - labelHeight - labelPositionByIndex - offset - addOuterMargin;
  
     // let textWidth = 0; 
     label.name.match(/./g).concat(['.']).concat(label.twitterId.match(/./g)).map(char => {
@@ -226,6 +229,8 @@ module.exports = async (
           </svg>
       </svg>
     `;
+
+    lastLabelYPos = yPos;
   });
 
   // when there are too many autographs to display, add a more with the number of labels not shown.
@@ -238,7 +243,7 @@ module.exports = async (
         <g>
           <rect x="0" y="0" width="${autographFontSize * 6.5}" height="${labelHeight}" style="fill:rgb(255,255,255)" fill-opacity="0.5" rx="2"></rect>
           <text style="font-family: 'Barlow'; fill:white;" font-size="${autographFontSize}">
-            <tspan x="${rootPixelSize * 0.2}" y="${rootPixelSize * 1.1}">AND ${data.length -3} MORE...</tspan>
+            <tspan x="${rootPixelSize * 0.2}" y="${rootPixelSize * 1.2}">AND ${data.length -3} MORE...</tspan>
           </text>
         </g>
       </svg>
@@ -258,21 +263,21 @@ module.exports = async (
     $('.label image').eq(index).attr('href', imagePhotoURLBase64);
   }));
 
-  const labelHeight = rootPixelSize * 1.75; // Must be the right label height for calc to work.
-  const heightOfText = rootPixelSize * 1;
+  // const labelHeight = rootPixelSize * 1.75; // Must be the right label height for calc to work.
+  // const heightOfText = rootPixelSize * 1;
   // let offset = data.length > 3 ? labelHeight * 1.4 : 0;
   // const yPosStatus = imgH - outerMargin - (labelHeight * (labelData.length * 2)) - offset - heightOfText;
 
   // calculation should be: (margin from bottom) + (label height * length) + (spacing) + (height of text)
-  const yPosStatus = imgH - (outerMargin + (labelHeight * labelData.length) + (rootPixelSize * 2) + heightOfText);
+  // const yPosStatus = imgH - (outerMargin + (labelHeight * labelData.length) + (rootPixelSize * 2) + heightOfText);
 
   $('.status').attr({
-    "x": (imgW - rootPixelSize * 4) - (outerMargin), 
-    "y": yPosStatus,
+    "x": (imgW - rootPixelSize * 3.2) - (outerMargin), 
+    "y": lastLabelYPos - rootPixelSize * 2.5,
   });
   
   $('.status text').attr({
-    "font-size": rootPixelSize * 1 
+    "font-size": rootPixelSize * 0.8
   });
   
   // // remove the 'not signed label' when signed view
