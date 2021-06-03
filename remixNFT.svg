@@ -131,8 +131,8 @@ svg {
       <svg class="timestamp" xmlns="http://www.w3.org/2000/svg" style="fill: white; font-family: 'Source Code Pro'">
         <text transform="rotate(90)" x="20.650000000000002" y="-519.025" font-size="16.52">17654321.3JUN2021</text>
       </svg>
-      <svg class="status" xmlns="http://www.w3.org/2000/svg" style="fill: white; font-family: 'Source Code Pro'" x="443.446" y="231.27999999999997">
-        <text x="0" y="30" font-size="13.216000000000001">Requesting:</text>
+      <svg class="status" xmlns="http://www.w3.org/2000/svg" style="fill: white; font-family: 'Source Code Pro'" x="476.486" y="231.27999999999997">
+        <text x="0" y="30" font-size="13.216000000000001">Signed:</text>
       </svg>
       <g class="label-container">
       <svg class="label" xmlns="http://www.w3.org/2000/svg" x="303.69800000000004" y="334.3648">

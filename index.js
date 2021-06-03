@@ -30,7 +30,7 @@ imageGenerator(
   // "https://storage.opensea.io/files/0fbeacdb0bf089800109f3b1d0401c6b.svg",
   [
     {
-      title: "Requesting:",
+      title: "Signed:",
       photoURL: "https://pbs.twimg.com/profile_images/264316321/beeple_headshot_beat_up_400x400.jpg",
       name: "@Beeple",
       twitterId: "1234567890",

@@ -270,7 +270,7 @@ module.exports = async (
   // const yPosStatus = imgH - (outerMargin + (labelHeight * labelData.length) + (rootPixelSize * 2) + heightOfText);
 
   let xPosStatus;
-  if (data[0].title.toUpperCase() === "SIGNED") {  
+  if (data[0].title.toUpperCase().indexOf("SIGNED") > -1) {  
     xPosStatus = (imgW - rootPixelSize * 3.2) - (outerMargin); 
   } else { 
     xPosStatus = (imgW - rootPixelSize * 5.2) - (outerMargin); 
