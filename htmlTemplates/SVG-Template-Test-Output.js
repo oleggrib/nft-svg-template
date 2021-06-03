@@ -120,8 +120,8 @@ svg {
   }
     </style>
     <g x="0" y="0">
-      <svg xmlns="http://www.w3.org/2000/svg">
-        <image class="nft" x="0" y="0" href=""></image>
+      <svg class="autograph-nft-image-container" xmlns="http://www.w3.org/2000/svg">
+        <image class="autograph-nft-image" x="0" y="0" href=""></image>
       </svg>
       <g class="autograph-nft-not-signed">
         <rect x="32" y="32" width="160" height="60" style="fill:rgb(255,255,255)" fill-opacity="0.5" rx="2"></rect>

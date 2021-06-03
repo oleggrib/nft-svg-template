@@ -5,11 +5,11 @@ https://www.npmjs.com/package/html-to-image
 
 ## MVP TODO's
 
+- Re-apply 'Signed' / 'Requested' labels (done)
 - Correct labelling logic, works for 1, 2, 3, breaks at 4. (done)
+- Re-enable the SVG image types (done)
 - Correct label widths
 - Re-apply the colour checking
-- Re-enable the SVG image types
-- Re-apply 'Signed' / 'Requested' labels
 - Re-apply image format 'png' / 'svg'
 
 ## TODO's

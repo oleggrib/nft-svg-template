@@ -58,39 +58,37 @@ module.exports = async (
   
   // get Content type
   const contentType = await imageUrlData.headers.get('content-type');
-
-  // if(!contentType) throw 'Could not define content type';
   
   // if SVG
-  // if (contentType.indexOf("svg") > -1) {
+  if (contentType.indexOf("svg") > -1) {
 
-  //   // get SVG element from response
-  //   svgUrlData = await imageUrlData.text();
-  //   // [x, y, width, height]
+    // get SVG element from response
+    svgUrlData = await imageUrlData.text();
+    // [x, y, width, height]
 
-  //   // base64 encode SVG
-  //   imageBase64 = svg64(svgUrlData);
+    // base64 encode SVG
+    imageBase64 = svg64(svgUrlData);
 
-  //   const svgEl = $("svg");
-  //   const svgViewBox = $(svgEl).attr('viewBox');
-  //   const svgWidth = $(svgEl).attr('width');
-  //   const svgHeight = $(svgEl).attr('height');
-  //   let svgViewBoxData = svgViewBox ? $(svg).attr('viewBox').split(' ') : undefined;
+    const svgEl = $(svgUrlData);
+    const svgViewBox = svgEl.attr('viewBox');
+    const svgWidth = svgEl.attr('width');
+    const svgHeight = svgEl.attr('height');
+    let svgViewBoxData = svgViewBox ? svgEl.attr('viewBox').split(' ') : undefined;
   
-  //   if (svgViewBoxData){
-  //     // apply height width of SVG from ViewBox values
-  //     imgW = viewBoxData[2];
-  //     imgH = viewBoxData[3];
-  //   } else if(svgWidth && svgHeight) {
-  //     // apply height width of SVG from W/H values
-  //     imgW = svgWidth;
-  //     imgH = svgHeight;
-  //   } else {
-  //     // fallback if an image size cannot be found
-  //     imgW = 500;
-  //     imgH = 500;
-  //   }
-  // }
+    if (svgViewBoxData){
+      // apply height width of SVG from ViewBox values
+      imgW = svgViewBoxData[2];
+      imgH = svgViewBoxData[3];
+    } else if(svgWidth && svgHeight) {
+      // apply height width of SVG from W/H values
+      imgW = svgWidth;
+      imgH = svgHeight;
+    } else {
+      // fallback if an image size cannot be found
+      imgW = 500;
+      imgH = 500;
+    }
+  }
 
   // if other (PNG, JPG, Gif)
   if (contentType.indexOf("svg") <= -1) {
@@ -157,8 +155,20 @@ module.exports = async (
   var months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
   const dateStamp = `${d.getDate()}${months[n]}${d.getFullYear()}`;
   
-  // Apply NFT Background colour
-  $('.nft').eq(0).attr('href', imageBase64);
+  // if SVG - Embed the data directly
+  if (contentType.indexOf("svg") > -1) {
+    $('.autograph-nft-image-container').html($(svgUrlData));
+  }
+  
+  // if Image (PNG, Giff, Jpeg) - embed the data inside the image element
+  if (contentType.indexOf("svg") <= -1) {
+    $('.autograph-nft-image').eq(0).attr({ 
+      'href': imageBase64, 
+      'height': imgH,
+      'width': imgW
+    });
+  }
+
   // $('.label image').eq(index).attr('href', imagePhotoURLBase64);
   // $('.autograph-nft').eq(0).css('background-image', 'url(' + imageBase64 + ')');
   // Apply Stamp
@@ -261,14 +271,6 @@ module.exports = async (
     $('.label image').eq(index).attr('href', imagePhotoURLBase64);
   }));
 
-  // const labelHeight = rootPixelSize * 1.75; // Must be the right label height for calc to work.
-  // const heightOfText = rootPixelSize * 1;
-  // let offset = data.length > 3 ? labelHeight * 1.4 : 0;
-  // const yPosStatus = imgH - outerMargin - (labelHeight * (labelData.length * 2)) - offset - heightOfText;
-
-  // calculation should be: (margin from bottom) + (label height * length) + (spacing) + (height of text)
-  // const yPosStatus = imgH - (outerMargin + (labelHeight * labelData.length) + (rootPixelSize * 2) + heightOfText);
-
   let xPosStatus;
   if (data[0].title.toUpperCase().indexOf("SIGNED") > -1) {  
     xPosStatus = (imgW - rootPixelSize * 3.2) - (outerMargin); 
@@ -278,11 +280,15 @@ module.exports = async (
 
   $('.status').attr({
     "x": xPosStatus,
-    "y": lastLabelYPos - rootPixelSize * 2.5,
+    "y": lastLabelYPos - rootPixelSize * 4
   });
   
+  // Note the y definition is crutial to the accuracy of the text positioning of 
+  // .status. This relative to scale value is provided below, then
+  // scale based positioning can be applied. 
   $('.status text').attr({
-    "font-size": rootPixelSize * 0.8
+    "font-size": rootPixelSize * 0.8,
+    "y": rootPixelSize * 3.2
   });
   
   // // remove the 'not signed label' when signed view
