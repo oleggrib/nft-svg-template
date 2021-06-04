@@ -200,10 +200,12 @@ module.exports = async (
         // TODO ensure the values are correct. font size is correct etc (*REQUIRES FIX).
         // Calulate and increment the width.
         // incrementVal = Math.round(googleFontData[char] * (rootPixelSize * 1.3/10));  
-        incrementVal = (shortestInLength/100) * (googleFontData[char]/3);
+        incrementVal = (shortestInLength/100) * (googleFontData[char]/3.5);
         textWidth += incrementVal;
       }
     });
+    // add space for avatar
+    textWidth += 23;
     // TODO REQUIRES FIX: The text width is not accurate
     // this could be because of the following:
     // a: The googleFontData is incorrect
