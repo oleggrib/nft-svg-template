@@ -8,9 +8,10 @@ https://www.npmjs.com/package/html-to-image
 - Re-apply 'Signed' / 'Requested' labels (done)
 - Correct labelling logic, works for 1, 2, 3, breaks at 4. (done)
 - Re-enable the SVG image types (done)
+- Re-apply image format 'png' / 'svg' (done)
+- Re-apply the colour checking / colour of font logic
 - Correct label widths
-- Re-apply the colour checking
-- Re-apply image format 'png' / 'svg'
+- PNG label font size not correctly rendered
 
 ## TODO's
 
